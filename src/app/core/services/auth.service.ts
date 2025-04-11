@@ -1,9 +1,10 @@
 // src/app/core/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environment';
 import { LoginDTO, LoginResponseDTO } from '../../models/Login.Interface';
+import { Router } from '@angular/router';
 
 
 
@@ -12,11 +13,34 @@ import { LoginDTO, LoginResponseDTO } from '../../models/Login.Interface';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/Auth`;
+  user: any;
+  constructor(private http: HttpClient, private router: Router) {}
+  // private apiUrl = `${environment.apiUrl}/Auth`;
 
-  constructor(private http: HttpClient) {}
 
-  login(data: LoginDTO): Observable<LoginResponseDTO> {
-    return this.http.post<LoginResponseDTO>(`${this.apiUrl}/login`, data);
+
+  login(payload: LoginDTO): Observable<LoginResponseDTO> {
+    return this.http.post<LoginResponseDTO>(`${environment.apiUrl}/api/Auth/login`, payload).pipe(
+      tap((response) => {
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('authTokenExpiry', (Date.now() + response.expiresIn * 1000).toString());
+  
+        const userData = {
+          id: response.id,
+          email: response.email,
+          fullName: response.fullName,
+        };
+        // this.user.setUserData(userData); // ✳️ هنا فيه مشكلة بسيطة
+      })
+    );
   }
+
+
+  logout(): void {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authTokenExpiry');
+    // أي بيانات إضافية حابب تمسحها
+    this.router.navigate(['/login']); // لو حابب تعيد التوجيه بعد تسجيل الخروج
+  }
+  
 }

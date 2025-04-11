@@ -1,14 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  ReactiveFormsModule,
-  FormControl,
-} from '@angular/forms';
-
+import { FormGroup, FormBuilder, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -21,6 +14,7 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class LoginComponent implements OnInit {
   loading = false;
+  showPassword = false;
   loginForm!: FormGroup;
 
   constructor(
@@ -30,30 +24,43 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {}
 
-
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', Validators.required],
       password: ['', Validators.required],
     });
+
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      this.router.navigate(['/dashboard']);
+      console.log('Token found, redirecting to dashboard...');
+    }
   }
 
-  onSubmit() {
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  onSubmit(): void {
     if (this.loginForm.invalid) {
-      return; 
+      return;
     }
 
     this.loading = true;
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
-        localStorage.setItem('token', res.token);
-        this.toastr.success(`Welcome ${res.fullName}!`, 'Login Success');
-        this.router.navigate(['/dashboard']); //change route in the future 
+        if (res && res.token) {
+          localStorage.setItem('authToken', res.token);
+          this.toastr.success(`مرحبًا ${res.fullName}!`, 'تم تسجيل الدخول بنجاح');
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.toastr.error('لم يتم استلام رمز المصادقة.', 'خطأ');
+        }
         this.loading = false;
       },
       error: (err) => {
-        this.toastr.error(err.error?.message || 'Login failed');
+        this.toastr.error(err.error?.message || 'فشل في تسجيل الدخول', 'خطأ');
         this.loading = false;
       },
     });

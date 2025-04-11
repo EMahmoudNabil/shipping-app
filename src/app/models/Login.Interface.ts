@@ -10,3 +10,10 @@ export interface LoginDTO {
     token: string;
     expiresIn: number;
   }
+
+
+  export interface UserData {
+    id: string;
+    email: string;
+    fullName: string;
+  }
