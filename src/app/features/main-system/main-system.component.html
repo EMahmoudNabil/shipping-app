@@ -1,7 +1,8 @@
 <app-side-nav [ngClass]="{ 'sidebar-active': sidebarActive }"></app-side-nav>
 <main>
   <app-loading></app-loading>
-  <app-navbar (sidebarToggle)="toggleSidebar()"></app-navbar>
+  <app-navbar (sidebarToggle)="toggleSidebar()"(addCityClicked)="onAddCityClick()"></app-navbar>
+  <app-add-city #addCityComponent (citiesChanged)="reloadCities()"></app-add-city>
   <router-outlet></router-outlet>
 </main>
 

@@ -1,4 +1,4 @@
-<div class="modal bg-dark bg-opacity-25" #modal id="addFieldJobModal">
+<div class="modal bg-dark bg-opacity-25" #modal  id="addFieldJobModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" dir="rtl">
         <div class="modal-header justify-content-between align-items-center">
@@ -40,63 +40,63 @@
               </div>
             </div>
             <div class="mb-3">
-              <label for="normalCharge" class="form-label">تكلفة الشحن</label>
+              <label for="standardShippingCost" class="form-label">تكلفة الشحن</label>
               <input
                 type="number"
                 class="form-control"
-                id="normalCharge"
-                formControlName="normalCharge"
+                id="standardShippingCost"
+                formControlName="standardShippingCost"
                 [ngClass]="{
                   'is-invalid':
-                    cityForm.get('normalCharge')?.invalid &&
-                    cityForm.get('normalCharge')?.touched,
+                    cityForm.get('standardShippingCost')?.invalid &&
+                    cityForm.get('standardShippingCost')?.touched,
                   'is-valid':
-                    cityForm.get('normalCharge')?.valid &&
-                    cityForm.get('normalCharge')?.touched
+                    cityForm.get('standardShippingCost')?.valid &&
+                    cityForm.get('standardShippingCost')?.touched
                 }"
               />
               <div
                 *ngIf="
-                  cityForm.get('normalCharge')?.invalid &&
-                  cityForm.get('normalCharge')?.touched
+                  cityForm.get('standardShippingCost')?.invalid &&
+                  cityForm.get('standardShippingCost')?.touched
                 "
                 class="text-danger small"
               >
-                <div *ngIf="cityForm.get('normalCharge')?.errors?.['required']">
+                <div *ngIf="cityForm.get('standardShippingCost')?.errors?.['required']">
                   يجب أدخال تكلفة الشحن
                 </div>
-                <div *ngIf="cityForm.get('normalCharge')?.errors?.['min']">
+                <div *ngIf="cityForm.get('standardShippingCost')?.errors?.['min']">
                   يجب أن تكون تكلفة الشحن اكبر من صفر
                 </div>
               </div>
             </div>
             <div class="mb-3">
-              <label for="pickUpCharge" class="form-label">تكلفة ال pickup</label>
+              <label for="pickupShippingCost" class="form-label">تكلفة ال pickup</label>
               <input
                 type="number"
                 class="form-control"
-                id="pickUpCharge"
-                formControlName="pickUpCharge"
+                id="pickupShippingCost"
+                formControlName="pickupShippingCost"
                 [ngClass]="{
                   'is-invalid':
-                    cityForm.get('pickUpCharge')?.invalid &&
-                    cityForm.get('pickUpCharge')?.touched,
+                    cityForm.get('pickupShippingCost')?.invalid &&
+                    cityForm.get('pickupShippingCost')?.touched,
                   'is-valid':
-                    cityForm.get('pickUpCharge')?.valid &&
-                    cityForm.get('pickUpCharge')?.touched
+                    cityForm.get('pickupShippingCost')?.valid &&
+                    cityForm.get('pickupShippingCost')?.touched
                 }"
               />
               <div
                 *ngIf="
-                  cityForm.get('pickUpCharge')?.invalid &&
-                  cityForm.get('pickUpCharge')?.touched
+                  cityForm.get('pickupShippingCost')?.invalid &&
+                  cityForm.get('pickupShippingCost')?.touched
                 "
                 class="text-danger small"
               >
-                <div *ngIf="cityForm.get('pickUpCharge')?.errors?.['required']">
+                <div *ngIf="cityForm.get('pickupShippingCost')?.errors?.['required']">
                   يجب أدخال تكلفة ال pickup
                 </div>
-                <div *ngIf="cityForm.get('pickUpCharge')?.errors?.['min']">
+                <div *ngIf="cityForm.get('pickupShippingCost')?.errors?.['min']">
                   يجب أن تكون تكلفة ال pickup اكبر من صفر
                 </div>
               </div>

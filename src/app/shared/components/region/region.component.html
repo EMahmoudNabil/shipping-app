@@ -1,0 +1,21 @@
+<div class="p-4">
+    <h2>Regions</h2>
+    <ul>
+      <li *ngFor="let region of regions">
+        {{ region.governorate }} -
+        <button (click)="getRegionById(region.id)">عرض</button>
+        <button (click)="deleteRegion(region.id)">حذف</button>
+      </li>
+    </ul>
+  
+    <hr />
+  
+    <button (click)="createRegion()">إضافة جديد</button>
+    <button (click)="updateRegion()">تحديث المحدد</button>
+  
+    <div *ngIf="selectedRegion">
+      <h3>Region Details</h3>
+      <pre>{{ selectedRegion | json }}</pre>
+    </div>
+  </div>
+  

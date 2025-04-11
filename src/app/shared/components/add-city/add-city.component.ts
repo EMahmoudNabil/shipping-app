@@ -19,12 +19,12 @@ export class AddCityComponent {
     private _unitOfWork: UnitOfWorkServices,
     private toastr : ToastrService
   ) {
-    this.cityForm = this.fb.group({
-      name: ['', Validators.required],
-      regionId: [0, Validators.required],
-      normalCharge: [null, [Validators.required, Validators.min(0.01)]],
-      pickUpCharge: [null, [Validators.required, Validators.min(0.01)]],
-    });
+this.cityForm = this.fb.group({
+  name: ['', Validators.required],
+  regionId: [0, Validators.required],
+  standardShippingCost: [null, [Validators.required, Validators.min(0.01)]],
+  pickupShippingCost: [null, [Validators.required, Validators.min(0.01)]],
+});
   }
 
 id:number=0;

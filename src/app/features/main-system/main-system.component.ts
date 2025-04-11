@@ -6,10 +6,11 @@ import { SideNavComponent } from "../../shared/components/side-nav/side-nav.comp
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { NavbarComponent } from "../../shared/components/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
+import { AddCityComponent } from '../../shared/components/add-city/add-city.component';
 
 @Component({
   selector: 'app-main-system',
-  imports: [RouterOutlet,SideNavComponent, LoadingComponent, NavbarComponent ,CommonModule],
+  imports: [RouterOutlet, SideNavComponent, LoadingComponent, NavbarComponent, CommonModule, AddCityComponent],
   templateUrl: './main-system.component.html',
   styleUrl: './main-system.component.css'
 })
@@ -20,6 +21,9 @@ export class MainSystemComponent {
     private toastr: ToastrService,
     private router: Router
   ) {}
+  reloadCities() {
+    console.log('reloadCities called!');
+  }
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
@@ -32,5 +36,11 @@ export class MainSystemComponent {
     this.sidebarActive = !this.sidebarActive;
     this.sideNav?.headerToggle();
   }
+
+  @ViewChild(AddCityComponent) addCityComponent!: AddCityComponent;
+  onAddCityClick() {
+    this.addCityComponent.addModal(0); // أو تمرر regionId حسب ما تحب
+  }
+
 
 }

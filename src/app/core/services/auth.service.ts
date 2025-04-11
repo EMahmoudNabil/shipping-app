@@ -24,7 +24,6 @@ export class AuthService {
       tap((response) => {
         localStorage.setItem('authToken', response.token);
         localStorage.setItem('authTokenExpiry', (Date.now() + response.expiresIn * 1000).toString());
-  
         const userData = {
           id: response.id,
           email: response.email,
