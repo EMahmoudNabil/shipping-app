@@ -1,21 +1,117 @@
-<div class="p-4">
-    <h2>Regions</h2>
-    <ul>
-      <li *ngFor="let region of regions">
-        {{ region.governorate }} -
-        <button (click)="getRegionById(region.id)">عرض</button>
-        <button (click)="deleteRegion(region.id)">حذف</button>
-      </li>
-    </ul>
+
+<div class="container mt-5 arabic-style">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0 text-primary">
+        <i class="fas fa-map-marker-alt me-2"></i>إدارة المناطق
+      </h2>
+      <button class="btn btn-primary" (click)="openCreateModal()">
+        <i class="fas fa-plus-circle me-2"></i>إضافة منطقة جديدة
+      </button>
+    </div>
   
-    <hr />
-  
-    <button (click)="createRegion()">إضافة جديد</button>
-    <button (click)="updateRegion()">تحديث المحدد</button>
-  
-    <div *ngIf="selectedRegion">
-      <h3>Region Details</h3>
-      <pre>{{ selectedRegion | json }}</pre>
+    <!-- Regions Table -->
+    <div class="card shadow-lg border-0">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="bg-light-primary">
+              <tr>
+                <th class="py-3">#</th>
+                <th class="py-3">المحافظة</th>
+                <th class="py-3">تاريخ الإنشاء</th>
+                <th class="py-3 text-center">الحالة</th>
+                <th class="py-3 text-center">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let region of regions" class="transition">
+                <td class="align-middle">{{ region.id }}</td>
+                <td class="align-middle fw-medium">{{ region.governorate }}</td>
+                <td class="align-middle">{{ region.createdAt | date: 'mediumDate' }}</td>
+                <td class="align-middle text-center">
+                    <label class="switch">
+                      <input 
+                        type="checkbox" 
+                        [(ngModel)]="region.isDeleted"
+                        (change)="updateRegionStatus(region)"
+                        [checked]="!region.isDeleted"
+                      >
+                      <span class="slider round"></span>
+                    </label>
+                  </td>
+                <td class="align-middle text-center">
+                  <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-info mx-1" 
+                            (click)="openEditModal(region)"
+                            title="تعديل"
+                            [disabled]="region.isDeleted">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger mx-1 position-relative" 
+                            (click)="confirmDelete(region)"
+                            title="حذف"
+                            [disabled]="deletingId === region.id">
+                      <i class="fas fa-trash-alt"></i>
+                      <span *ngIf="deletingId === region.id" 
+                            class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-spinner fa-spin"></i>
+                      </span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Create/Edit Modal -->
+    <div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white position-relative">
+                <h5 class="modal-title mb-0">
+                  <i class="fas fa-edit me-2"></i>
+                  {{ isEditMode ? 'تعديل المنطقة' : 'إضافة منطقة جديدة' }}
+                </h5>
+                <button 
+                  type="button" 
+                  class="btn btn-icon btn-sm btn-light-primary rounded-circle p-1" 
+                  (click)="closeModal()"
+                  aria-label="إغلاق"
+                >
+                  <i class="fas fa-times text-white fs-5"></i>
+                </button>
+              </div>
+          <div class="modal-body py-4">
+            <form (ngSubmit)="handleSubmit()" class="rtl-form">
+              <div class="form-group mb-4">
+                <label class="form-label fw-medium">
+                  <i class="fas fa-city me-2"></i>اسم المحافظة
+                </label>
+                <input type="text" 
+                  class="form-control form-control-lg" 
+                  [(ngModel)]="selectedRegion.governorate" 
+                  name="governorate" 
+                  required
+                  placeholder="أدخل اسم المحافظة">
+              </div>
+              <div class="d-flex justify-content-between mt-4">
+                <button type="button" 
+                  class="btn btn-secondary btn-lg" 
+                  (click)="closeModal()">
+                  <i class="fas fa-times-circle me-2"></i>إلغاء
+                </button>
+                <button type="submit" 
+                  class="btn btn-primary btn-lg">
+                  <i class="fas fa-save me-2"></i>
+                  {{ isEditMode ? 'حفظ التعديلات' : 'إضافة' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  

@@ -9,6 +9,13 @@ export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },  // إعادة التوجيه إلى login إذا لم يكن هناك مسار آخر
   { path: 'login', component: LoginComponent },  // مسار صفحة تسجيل الدخول
   { path: 'dashboard', component: MainSystemComponent, canActivate: [AuthGuard] },
-  {    path: 'add-city',    component: AddCityComponent ,canActivate: [AuthGuard] },
-  { path: 'regions', component: RegionComponent , canActivate: [AuthGuard] },
+  {
+    path: '',
+    component: MainSystemComponent, // المكون الرئيسي الذي يحتوي على الهيكل
+    children: [
+      { path: '', component: MainSystemComponent }, // الصفحة الرئيسية
+      { path: 'regions', component: RegionComponent } // سيظهر داخل الـ main
+    ], canActivate: [AuthGuard]
+  }
+
 ];

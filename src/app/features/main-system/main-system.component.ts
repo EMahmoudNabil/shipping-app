@@ -7,10 +7,11 @@ import { LoadingComponent } from "../../shared/components/loading/loading.compon
 import { NavbarComponent } from "../../shared/components/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
 import { AddCityComponent } from '../../shared/components/add-city/add-city.component';
+import { RegionComponent } from "../../shared/components/region/region.component";
 
 @Component({
   selector: 'app-main-system',
-  imports: [RouterOutlet, SideNavComponent, LoadingComponent, NavbarComponent, CommonModule, AddCityComponent],
+  imports: [RouterOutlet, SideNavComponent, LoadingComponent, NavbarComponent, CommonModule],
   templateUrl: './main-system.component.html',
   styleUrl: './main-system.component.css'
 })
