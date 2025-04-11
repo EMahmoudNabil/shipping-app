@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { SideNavComponent } from "../side-nav/side-nav.component";
+import { UnitOfWorkServices } from '../../../core/services/unitOfWork.service';
 
 
 
@@ -24,7 +25,7 @@ export class RegionComponent implements OnInit {
 
   constructor(
     private toastr: ToastrService,
-    private regionService: RegionService,
+    private _UnitOfWorkServices: UnitOfWorkServices,
     
   ) {}
 
@@ -33,7 +34,7 @@ export class RegionComponent implements OnInit {
   }
 
   private loadRegions(): void {
-    this.regionService.getAll().subscribe({
+    this._UnitOfWorkServices.Region.getAll().subscribe({
       next: (data) => this.regions = data,
       error: (err) => console.error('Error loading regions:', err)
     });
@@ -57,13 +58,13 @@ export class RegionComponent implements OnInit {
 
   handleSubmit(): void {
     if (this.isEditMode) {
-      this.regionService.update(this.selectedRegion.id, this.selectedRegion)
+      this._UnitOfWorkServices.Region.update(this.selectedRegion.id, this.selectedRegion)
         .subscribe(() => {
           this.loadRegions();
           this.closeModal();
         });
     } else {
-      this.regionService.create(this.selectedRegion)
+      this._UnitOfWorkServices.Region.create(this.selectedRegion)
         .subscribe(() => {
           this.loadRegions();
           this.closeModal();
@@ -96,7 +97,7 @@ export class RegionComponent implements OnInit {
     try {
       this.deletingId = region.id;
       
-      await this.regionService.delete(region.id).toPromise();
+      await this._UnitOfWorkServices.Region.delete(region.id).toPromise();
       
       this.toastr.success('تم الحذف بنجاح', 'عملية ناجحة', {
         positionClass: 'toast-top-left',
@@ -133,8 +134,8 @@ export class RegionComponent implements OnInit {
     // Toggle the status immediately for better UX
     region.isDeleted = !region.isDeleted;
   
-    this.regionService.update(region.id, region).subscribe({
-      error: (err) => {
+    this._UnitOfWorkServices.Region.update(region.id, region).subscribe({
+      error: (err:any) => {
         // Revert on error
         region.isDeleted = originalStatus;
         console.error('Failed to update status:', err);

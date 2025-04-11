@@ -137,3 +137,23 @@
   .slider.round:before {
     border-radius: 50%;
   }
+
+  /* Pagination */
+  .pagination {
+    direction: ltr; /* For RTL languages */
+  }
+  
+  .page-link {
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .page-item.disabled .page-link {
+    opacity: 0.6;
+    pointer-events: none;
+  }

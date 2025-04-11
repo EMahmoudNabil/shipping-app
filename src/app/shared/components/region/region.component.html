@@ -21,7 +21,7 @@
                 <th class="py-3">المحافظة</th>
                 <th class="py-3">تاريخ الإنشاء</th>
                 <th class="py-3 text-center">الحالة</th>
-                <th class="py-3 text-center">الإجراءات</th>
+                <th class="py-3 text-center">الاعدادات </th>
               </tr>
             </thead>
             <tbody>
@@ -48,22 +48,16 @@
                             [disabled]="region.isDeleted">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-danger mx-1 position-relative" 
-                            (click)="confirmDelete(region)"
-                            title="حذف"
-                            [disabled]="deletingId === region.id">
-                      <i class="fas fa-trash-alt"></i>
-                      <span *ngIf="deletingId === region.id" 
-                            class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-spinner fa-spin"></i>
-                      </span>
-                    </button>
+                   
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+
+        
       </div>
     </div>
     <!-- Create/Edit Modal -->

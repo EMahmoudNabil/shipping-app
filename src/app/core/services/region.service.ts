@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { Region } from '../../models/Region.Interface ';
@@ -12,11 +12,13 @@ import { environment } from '../../environment';
 export class RegionService  implements GenericCURD<any> {
 
  private apiUrl = `${environment.apiUrl}/api/Region`;
-
+    private PageSize = 5;
+    private PageNumber = 1;
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Region[]> {
-    return this.http.get<Region[]>(this.apiUrl);
+   
+    return this.http.get<Region[]>(`${this.apiUrl}/?PageSize=${this.PageSize}&PageNumber=${this.PageNumber}`);
   }
 
   getById(id: number): Observable<Region> {
