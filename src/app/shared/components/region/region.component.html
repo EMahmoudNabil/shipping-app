@@ -56,7 +56,28 @@
           </table>
         </div>
 
+<!-- Pagination Controls -->
+<div class="pagination-controls">
+  
+  <!-- Dropdown لعدد العناصر في الصفحة -->
+  <select [(ngModel)]="pageSize" (change)="onPageSizeChange(pageSize)">
+    <option value="5">5 عناصر</option>
+    <option value="7">7 عناصر</option>
+    <option value="10">10 عناصر</option>
+  </select>
 
+  <button (click)="prevPage()" [disabled]="PageNumber === 1">
+    <i class="fas fa-chevron-right"></i> السابق
+  </button>
+
+  <select [(ngModel)]="PageNumber" (change)="loadRegions()">
+    <option *ngFor="let page of pages" [value]="page">{{ page }}</option>
+  </select>
+
+  <button (click)="nextPage()" [disabled]="PageNumber === totalPages">
+    التالي <i class="fas fa-chevron-left"></i>
+  </button>
+</div>
         
       </div>
     </div>

@@ -23,6 +23,14 @@ export class RegionComponent implements OnInit {
   isEditMode = false;
   deletingId: number | null = null;
 
+  // Pagination properties
+   PageNumber: number = 1;
+   pageSize: number = 10;
+   pages: number[] = [];
+   hasNextPage: boolean = false;
+  totalItems: number = 0;
+  totalPages: number = 1;
+
   constructor(
     private toastr: ToastrService,
     private _UnitOfWorkServices: UnitOfWorkServices,
@@ -33,12 +41,63 @@ export class RegionComponent implements OnInit {
     this.loadRegions();
   }
 
-  private loadRegions(): void {
-    this._UnitOfWorkServices.Region.getAll().subscribe({
-      next: (data) => this.regions = data,
-      error: (err) => console.error('Error loading regions:', err)
-    });
+
+
+
+  loadRegions(): void {
+    this._UnitOfWorkServices.Region.getAllWithPagination(this.PageNumber, this.pageSize)
+      .subscribe({
+        next: (regions) => {
+          this.regions = regions;
+          this.calculateTotalPages();
+          this.updatePageNumbers();
+        }
+      });
   }
+
+
+  // Pagination methods
+  private calculateTotalPages(): void {
+  
+    this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+  }
+
+  updatePageNumbers(): void {
+    this.pages = [];
+    
+    const maxVisiblePages = 5; 
+    let start = Math.max(1, this.PageNumber - Math.floor(maxVisiblePages / 2));
+    let end = start + maxVisiblePages - 1;
+  
+    if (this.hasNextPage && end < this.PageNumber + 2) {
+      end = this.PageNumber + 2;
+    }
+  
+    start = Math.max(1, start);
+    
+    for (let i = start; i <= end; i++) {
+      this.pages.push(i);
+    }
+  }
+  nextPage(): void {
+    this.PageNumber++;
+    this.loadRegions();
+  }
+  
+  prevPage(): void {
+    this.PageNumber = Math.max(1, this.PageNumber - 1);
+    this.loadRegions();
+  }
+  
+  onPageSizeChange(newSize: number): void {
+    this.pageSize = newSize;
+    this.PageNumber = 1;
+    this.loadRegions();
+  }
+
+
+
+  //modal
 
   openCreateModal(): void {
     this.isEditMode = false;
@@ -59,25 +118,33 @@ export class RegionComponent implements OnInit {
   handleSubmit(): void {
     if (this.isEditMode) {
       this._UnitOfWorkServices.Region.update(this.selectedRegion.id, this.selectedRegion)
-        .subscribe(() => {
-          this.loadRegions();
-          this.closeModal();
+        .subscribe({
+          next: () => {
+            this.toastr.success('تم تحديث المنطقة بنجاح', 'نجاح');
+            this.loadRegions();
+            this.closeModal();
+          },
+          error: (err) => {
+            this.toastr.error('فشل في تحديث المنطقة', 'خطأ');
+            console.error('Update error:', err);
+          }
         });
     } else {
       this._UnitOfWorkServices.Region.create(this.selectedRegion)
-        .subscribe(() => {
-          this.loadRegions();
-          this.closeModal();
+        .subscribe({
+          next: () => {
+            this.toastr.success('تم إضافة المنطقة بنجاح', 'نجاح');
+            this.loadRegions();
+            this.closeModal();
+          },
+          error: (err) => {
+            this.toastr.error('فشل في إضافة المنطقة', 'خطأ');
+            console.error('Create error:', err);
+          }
         });
-    }
-  }
+    }}
 
-  // confirmDelete(region: Region): void {
-  //   if (confirm(`هل أنت متأكد من حذف محافظة ${region.governorate}؟`)) {
-  //     this.regionService.delete(region.id)
-  //       .subscribe(() => this.loadRegions());
-  //   }
-  // }
+
 
   private emptyRegion(): Region {
     return {
@@ -89,44 +156,8 @@ export class RegionComponent implements OnInit {
   }
 
 
-  async confirmDelete(region: Region) {
-    const confirmed = await this.showDeleteConfirmation();
-    
-    if (!confirmed) return;
-  
-    try {
-      this.deletingId = region.id;
-      
-      await this._UnitOfWorkServices.Region.delete(region.id).toPromise();
-      
-      this.toastr.success('تم الحذف بنجاح', 'عملية ناجحة', {
-        positionClass: 'toast-top-left',
-        timeOut: 3000,
-        progressBar: true,
-    
-      });
-      
-      // Refresh your data
-      this.loadRegions();
-      
-    } catch (error) {
-      this.toastr.error('فشل في عملية الحذف', 'خطأ', {
-        positionClass: 'toast-top-left',
-        timeOut: 5000,
-        progressBar: true,
-        
-      });
-    } finally {
-      this.deletingId = null;
-    }
-  }
-  
-  private showDeleteConfirmation(): Promise<boolean> {
-    return new Promise((resolve) => {
-      const result = confirm('هل أنت متأكد من رغبتك في حذف هذه المحافظة؟');
-      resolve(result);
-    });
-  }
+
+
 
   updateRegionStatus(region: Region) {
     const originalStatus = region.isDeleted;

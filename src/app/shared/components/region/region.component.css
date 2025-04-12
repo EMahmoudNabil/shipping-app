@@ -139,21 +139,28 @@
   }
 
   /* Pagination */
-  .pagination {
-    direction: ltr; /* For RTL languages */
+  .pagination-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
   }
   
-  .page-link {
+  .pagination-controls select {
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+  
+  .pagination-controls button {
+    padding: 5px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f8f9fa;
     cursor: pointer;
-    user-select: none;
   }
   
-  .page-item.active .page-link {
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-  
-  .page-item.disabled .page-link {
-    opacity: 0.6;
-    pointer-events: none;
+  .pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
