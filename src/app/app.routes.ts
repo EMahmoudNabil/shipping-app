@@ -8,6 +8,8 @@ import { SpecialCourierRegionComponent } from './shared/components/special-couri
 import { CityComponent } from './shared/components/city/city.component';
 import { BranchComponent } from './shared/components/branch/branch.component';
 import { ShippingTypeComponent } from './shared/components/shipping-type/shipping-type.component';
+import { MerchantService } from './core/services/Merchant.service';
+import { MerchantComponent } from './shared/components/merchant/merchant.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },  // إعادة التوجيه إلى login إذا لم يكن هناك مسار آخر
@@ -24,7 +26,8 @@ export const routes: Routes = [
       { path: 'cities', component: CityComponent },
 
       {path:'branches',component:BranchComponent},
-      {path:'Shippingtypes',component:ShippingTypeComponent}
+      {path:'Shippingtypes',component:ShippingTypeComponent},
+      {path:'addMerchant',component:MerchantComponent}
     ], canActivate: [AuthGuard]
   }
 ];

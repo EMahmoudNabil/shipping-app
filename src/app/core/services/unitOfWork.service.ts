@@ -9,6 +9,8 @@ import { CourierService } from "./Courier.Service";
 
 import { BranchService} from './branch.service';
 import { ShippingTypeService } from '../../models/ShippingTypeService ';
+import { MerchantService } from './Merchant.service';
+
 
 @Injectable({
     providedIn: 'root',
@@ -25,6 +27,7 @@ export class UnitOfWorkServices{
         public SpecialCourierRegion: SpecialCourierRegionService,
         public Courier: CourierService,
         public Branch: BranchService,
-        public ShippingType:ShippingTypeService
+        public ShippingType:ShippingTypeService,
+        public Merchant: MerchantService
     ) {}
 }

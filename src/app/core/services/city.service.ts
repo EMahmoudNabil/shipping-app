@@ -22,7 +22,9 @@ export class CityService {
       .set('PageSize', pageSize.toString());
     return this.http.get<City[]>(this.apiUrl, { params });
   }
-
+  getByRegionId(regionId: number): Observable<City[]> {
+    return this.http.get<City[]>(`${this.apiUrl}/CityByRegion?regionId=${regionId}`);
+  }
   getById(id: number): Observable<City> {
     return this.http.get<City>(`${this.apiUrl}/${id}`);
   }
