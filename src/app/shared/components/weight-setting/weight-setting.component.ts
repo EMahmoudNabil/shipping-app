@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { WeightSetting } from '../../../models/WeightSetting.interface';
 import { UnitOfWorkServices } from '../../../core/services/unitOfWork.service';
 import { ToastrService } from 'ngx-toastr';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-weight-setting',
   templateUrl: './weight-setting.component.html',
   styleUrls: ['./weight-setting.component.css'],
   imports: [FormsModule, CommonModule],
+  standalone: true,
 })
 export class WeightSettingComponent implements OnInit {
   weightSettings: WeightSetting[] = [];
-  selectedWeightSetting: WeightSetting = this.emptyWeightSetting();
+  selectedWeightSetting: Partial<WeightSetting> = this.emptyWeightSetting();
   showModal = false;
   isEditMode = false;
+  deletingId: number | null = null;
 
   // Pagination properties
   PageNumber: number = 1;
@@ -24,24 +27,118 @@ export class WeightSettingComponent implements OnInit {
   totalPages: number = 1;
 
   constructor(
-    private unitOfWork: UnitOfWorkServices,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private unitOfWork: UnitOfWorkServices
   ) {}
 
   ngOnInit(): void {
     this.loadWeightSettings();
   }
 
+  // Load all weight settings with pagination
   loadWeightSettings(): void {
     this.unitOfWork.WeightSetting.getAllWithPagination(this.PageNumber, this.pageSize).subscribe({
-      next: (data) => {
-        this.weightSettings = data;
+      next: (response: any) => {
+        this.weightSettings = response.data || response;
+        this.totalItems = response.totalCount || 0;
         this.calculateTotalPages();
         this.updatePageNumbers();
       },
-      error: (err) => {
-        this.toastr.error('Failed to load weight settings', 'Error');
-        console.error(err);
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
+      },
+    });
+  }
+
+  // Open modal for creating a new weight setting
+  openCreateModal(): void {
+    this.isEditMode = false;
+    this.selectedWeightSetting = this.emptyWeightSetting();
+    this.showModal = true;
+  }
+
+  // Open modal for editing an existing weight setting
+  openEditModal(weightSetting: WeightSetting): void {
+    this.isEditMode = true;
+    this.selectedWeightSetting = { ...weightSetting };
+    this.showModal = true;
+  }
+
+  // Close the modal
+  closeModal(): void {
+    this.showModal = false;
+  }
+
+  // Save weight setting (create or update)
+  saveWeightSetting(): void {
+    if (this.isEditMode) {
+      this.updateWeightSetting();
+    } else {
+      this.createWeightSetting();
+    }
+  }
+
+  // Create a new weight setting
+  createWeightSetting(): void {
+    this.unitOfWork.WeightSetting.create({
+      ...this.selectedWeightSetting,
+      id: this.selectedWeightSetting.id || 0,
+    } as WeightSetting).subscribe({
+      next: () => {
+        this.toastr.success('تم إضافة إعداد الوزن بنجاح');
+        this.loadWeightSettings();
+        this.closeModal();
+      },
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
+      },
+    });
+  }
+
+  // Update an existing weight setting
+  updateWeightSetting(): void {
+    this.unitOfWork.WeightSetting.update(
+      this.selectedWeightSetting.id || 0,
+      {
+        ...this.selectedWeightSetting,
+      } as WeightSetting
+    ).subscribe({
+      next: () => {
+        this.toastr.success('تم تحديث إعداد الوزن بنجاح');
+        this.loadWeightSettings();
+        this.closeModal();
+      },
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
+      },
+    });
+  }
+
+  // Confirm weight setting deletion
+  confirmDelete(id: number): void {
+    this.deletingId = id;
+  }
+
+  // Cancel weight setting deletion
+  cancelDelete(): void {
+    this.deletingId = null;
+  }
+
+  // Delete a weight setting
+  deleteWeightSetting(id: number): void {
+    this.unitOfWork.WeightSetting.delete(id).subscribe({
+      next: () => {
+        this.toastr.success('تم حذف إعداد الوزن بنجاح');
+        this.loadWeightSettings();
+        this.deletingId = null;
+      },
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
+        this.deletingId = null;
       },
     });
   }
@@ -49,28 +146,43 @@ export class WeightSettingComponent implements OnInit {
   // Pagination methods
   private calculateTotalPages(): void {
     this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+    if (this.totalPages === 0) this.totalPages = 1;
   }
 
-  updatePageNumbers(): void {
+  private updatePageNumbers(): void {
     this.pages = [];
     const maxVisiblePages = 5;
     let start = Math.max(1, this.PageNumber - Math.floor(maxVisiblePages / 2));
-    let end = start + maxVisiblePages - 1;
+    let end = Math.min(this.totalPages, start + maxVisiblePages - 1);
 
-    start = Math.max(1, start);
+    if (end === this.totalPages) {
+      start = Math.max(1, end - maxVisiblePages + 1);
+    }
+
     for (let i = start; i <= end; i++) {
       this.pages.push(i);
     }
   }
 
   nextPage(): void {
-    this.PageNumber++;
-    this.loadWeightSettings();
+    if (this.PageNumber < this.totalPages) {
+      this.PageNumber++;
+      this.loadWeightSettings();
+    }
   }
 
   prevPage(): void {
-    this.PageNumber = Math.max(1, this.PageNumber - 1);
-    this.loadWeightSettings();
+    if (this.PageNumber > 1) {
+      this.PageNumber--;
+      this.loadWeightSettings();
+    }
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.PageNumber) {
+      this.PageNumber = page;
+      this.loadWeightSettings();
+    }
   }
 
   onPageSizeChange(newSize: number): void {
@@ -79,67 +191,11 @@ export class WeightSettingComponent implements OnInit {
     this.loadWeightSettings();
   }
 
-  // Modal methods
-  openCreateModal(): void {
-    this.isEditMode = false;
-    this.selectedWeightSetting = this.emptyWeightSetting();
-    this.showModal = true;
+  private getErrorMessage(error: any): string {
+    return error.message || 'حدث خطأ غير معروف';
   }
 
-  openEditModal(weightSetting: WeightSetting): void {
-    this.isEditMode = true;
-    this.selectedWeightSetting = { ...weightSetting };
-    this.showModal = true;
-  }
-
-  closeModal(): void {
-    this.showModal = false;
-  }
-
-  handleSubmit(): void {
-    if (this.isEditMode) {
-      this.unitOfWork.WeightSetting.update(this.selectedWeightSetting.id, this.selectedWeightSetting).subscribe({
-        next: () => {
-          this.toastr.success('Weight setting updated successfully', 'Success');
-          this.loadWeightSettings();
-          this.closeModal();
-        },
-        error: (err) => {
-          this.toastr.error('Failed to update weight setting', 'Error');
-          console.error(err);
-        },
-      });
-    } else {
-      this.unitOfWork.WeightSetting.create(this.selectedWeightSetting).subscribe({
-        next: () => {
-          this.toastr.success('Weight setting added successfully', 'Success');
-          this.loadWeightSettings();
-          this.closeModal();
-        },
-        error: (err) => {
-          this.toastr.error('Failed to add weight setting', 'Error');
-          console.error(err);
-        },
-      });
-    }
-  }
-
-  deleteWeightSetting(id: number): void {
-    if (confirm('Are you sure you want to delete this weight setting?')) {
-      this.unitOfWork.WeightSetting.delete(id).subscribe({
-        next: () => {
-          this.toastr.success('Weight setting deleted successfully', 'Success');
-          this.loadWeightSettings();
-        },
-        error: (err) => {
-          this.toastr.error('Failed to delete weight setting', 'Error');
-          console.error(err);
-        },
-      });
-    }
-  }
-
-  private emptyWeightSetting(): WeightSetting {
+  private emptyWeightSetting(): Partial<WeightSetting> {
     return {
       id: 0,
       minWeight: 0,
