@@ -98,7 +98,6 @@ export class RegionComponent implements OnInit {
 
 
   //modal
-
   openCreateModal(): void {
     this.isEditMode = false;
     this.selectedRegion = this.emptyRegion();

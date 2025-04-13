@@ -9,6 +9,7 @@ import { CourierService } from "./Courier.Service";
 
 import { BranchService} from './branch.service';
 import { ShippingTypeService } from '../../models/ShippingTypeService ';
+import { EmployeeService } from './Employee.Service';
 
 @Injectable({
     providedIn: 'root',
@@ -19,7 +20,7 @@ export class UnitOfWorkServices{
     constructor(
         
         public City: CityService,
-
+        public Employee: EmployeeService,
         public Region: RegionService,
         public WeightSetting: WeightSettingService,
         public SpecialCourierRegion: SpecialCourierRegionService,
