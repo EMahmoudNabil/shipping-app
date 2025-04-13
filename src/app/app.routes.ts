@@ -2,8 +2,10 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './shared/components/login/login.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { MainSystemComponent } from './features/main-system/main-system.component';
-import { AddCityComponent } from './shared/components/add-city/add-city.component';
 import { RegionComponent } from './shared/components/region/region.component';
+import { WeightSettingComponent } from './shared/components/weight-setting/weight-setting.component';
+import { SpecialCourierRegionComponent } from './shared/components/special-courier-region/special-courier-region.component';
+import { CityComponent } from './shared/components/city/city.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },  // إعادة التوجيه إلى login إذا لم يكن هناك مسار آخر
@@ -14,7 +16,10 @@ export const routes: Routes = [
     component: MainSystemComponent, // المكون الرئيسي الذي يحتوي على الهيكل
     children: [
       { path: '', component: MainSystemComponent }, // الصفحة الرئيسية
-      { path: 'regions', component: RegionComponent } // سيظهر داخل الـ main
+      { path: 'regions', component: RegionComponent }, // سيظهر داخل الـ main
+      { path: 'weightsettings', component: WeightSettingComponent }, 
+      { path: 'specialcourierregions', component: SpecialCourierRegionComponent },
+      { path: 'cities', component: CityComponent },
     ], canActivate: [AuthGuard]
   }
 

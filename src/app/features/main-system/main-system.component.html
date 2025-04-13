@@ -1,8 +1,9 @@
 <app-side-nav [ngClass]="{ 'sidebar-active': sidebarActive }"></app-side-nav>
 <main>
   <app-loading></app-loading>
-  <app-navbar (sidebarToggle)="toggleSidebar()"(addCityClicked)="onAddCityClick()"></app-navbar>
-
+  <!-- <app-navbar (sidebarToggle)="toggleSidebar()"(addCityClicked)="onAddCityClick()"></app-navbar> -->
+  <app-navbar (sidebarToggle)="toggleSidebar()" (addCityClicked)="onAddCityClick()"></app-navbar>
+  <app-side-nav [ngClass]="{ 'sidebar-active': sidebarActive }"></app-side-nav>
 
 
   <router-outlet></router-outlet>

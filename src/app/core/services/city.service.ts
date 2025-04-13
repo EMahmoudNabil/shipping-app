@@ -1,31 +1,46 @@
-import { Observable } from "rxjs";
-import { GenericCURD } from "../../models/Generic.interface";
-import { environment } from "../../environment";
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { City } from '../../models/City.interface';
+import { environment } from '../../environment';
 
 @Injectable({
-    providedIn: 'root',
-  })
-export class CityService implements GenericCURD<any> {
+  providedIn: 'root',
+})
+export class CityService {
+  private apiUrl = `${environment.apiUrl}/api/CitySetting`;
 
- private apiUrl = `${environment.apiUrl}/api/City/GetAllCities`;
+  constructor(private http: HttpClient) {}
 
-constructor(private http: HttpClient) {}
+  getAll(): Observable<City[]> {
+    return this.http.get<City[]>(this.apiUrl);
+  }
 
-  getAll():Observable<any> {
-    return this.http.get(this.apiUrl);
+  getAllWithPagination(pageNumber: number, pageSize: number): Observable<City[]> {
+    const params = new HttpParams()
+      .set('PageNumber', pageNumber.toString())
+      .set('PageSize', pageSize.toString());
+    return this.http.get<City[]>(this.apiUrl, { params });
   }
-  getById(id: number | string):Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
+
+  getById(id: number): Observable<City> {
+    return this.http.get<City>(`${this.apiUrl}/${id}`);
   }
-  create(item: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/api/City/AddCity`, item);
+
+  create(city: Partial<City>): Observable<City> {
+    return this.http.post<City>(this.apiUrl, city);
   }
-  update(id: number | string, item: any):Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, item);
+
+  update(id: number, city: Partial<City>): Observable<City> {
+    return this.http.put<City>(`${this.apiUrl}/${id}`, city);
   }
-  delete(id: number | string): Observable<void> {
+
+  delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getCityByGovernorateName(regionId: number): Observable<City[]> {
+    const params = new HttpParams().set('RegionId', regionId.toString());
+    return this.http.get<City[]>(`${this.apiUrl}/GetCityByGovernorateName`, { params });
   }
 }

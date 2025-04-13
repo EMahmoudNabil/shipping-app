@@ -6,16 +6,16 @@ import { SideNavComponent } from "../../shared/components/side-nav/side-nav.comp
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { NavbarComponent } from "../../shared/components/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
-import { AddCityComponent } from '../../shared/components/add-city/add-city.component';
-import { RegionComponent } from "../../shared/components/region/region.component";
-
 @Component({
   selector: 'app-main-system',
-  imports: [RouterOutlet, SideNavComponent, LoadingComponent, NavbarComponent, CommonModule],
+  imports: [RouterOutlet, SideNavComponent, LoadingComponent, CommonModule, NavbarComponent],
   templateUrl: './main-system.component.html',
   styleUrl: './main-system.component.css'
 })
 export class MainSystemComponent {
+onAddCityClick() {
+throw new Error('Method not implemented.');
+}
   constructor(
    
     private authService: AuthService,
@@ -37,11 +37,4 @@ export class MainSystemComponent {
     this.sidebarActive = !this.sidebarActive;
     this.sideNav?.headerToggle();
   }
-
-  @ViewChild(AddCityComponent) addCityComponent!: AddCityComponent;
-  onAddCityClick() {
-    this.addCityComponent.addModal(0); // أو تمرر regionId حسب ما تحب
-  }
-
-
 }
