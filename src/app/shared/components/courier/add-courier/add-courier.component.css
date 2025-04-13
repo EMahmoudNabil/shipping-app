@@ -1,0 +1,13 @@
+.arabic-style {
+    direction: rtl;
+    text-align: right;
+  }
+  
+  .form-label {
+    font-weight: bold;
+  }
+  
+  button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }

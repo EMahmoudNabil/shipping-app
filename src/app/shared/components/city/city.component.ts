@@ -1,26 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { City } from '../../../models/City.interface';
-import { Region } from '../../../models/Region.Interface ';
-import { UnitOfWorkServices } from '../../../core/services/unitOfWork.service';
-import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { City } from '../../../models/City.interface';
+import { UnitOfWorkServices } from '../../../core/services/unitOfWork.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-city',
+  imports: [FormsModule, CommonModule],
   templateUrl: './city.component.html',
   styleUrls: ['./city.component.css'],
-  imports: [FormsModule, CommonModule],
+  standalone: true,
 })
 export class CityComponent implements OnInit {
   cities: City[] = [];
   selectedCity: Partial<City> = this.emptyCity();
-  regions: Region[] = [];
+  regions: { id: number; governorate: string }[] = [];
   showModal = false;
   isEditMode = false;
-
-  // Pagination properties
+  deletingId: number | null = null;
   PageNumber: number = 1;
   pageSize: number = 10;
   pages: number[] = [];
@@ -28,8 +26,8 @@ export class CityComponent implements OnInit {
   totalPages: number = 1;
 
   constructor(
-    private unitOfWork: UnitOfWorkServices,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private unitOfWork: UnitOfWorkServices
   ) {}
 
   ngOnInit(): void {
@@ -37,17 +35,18 @@ export class CityComponent implements OnInit {
     this.loadRegions();
   }
 
-  // Load all cities
+  // Load all cities with pagination
   loadCities(): void {
     this.unitOfWork.City.getAllWithPagination(this.PageNumber, this.pageSize).subscribe({
-      next: (data) => {
-        this.cities = data;
+      next: (response: any) => {
+        this.cities = response.data || response;
+        this.totalItems = response.totalCount || 0;
         this.calculateTotalPages();
         this.updatePageNumbers();
       },
-      error: (err) => {
-        this.toastr.error('Failed to load cities', 'Error');
-        console.error(err);
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
       },
     });
   }
@@ -56,23 +55,26 @@ export class CityComponent implements OnInit {
   loadRegions(): void {
     this.unitOfWork.Region.getAll().subscribe({
       next: (data) => {
-        this.regions = data;
+        this.regions = data.map((region) => ({
+          id: region.id,
+          governorate: region.governorate,
+        }));
       },
-      error: (err) => {
-        this.toastr.error('Failed to load regions', 'Error');
-        console.error(err);
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
       },
     });
   }
 
-  // Open the modal for creating a new city
+  // Open modal for creating a new city
   openCreateModal(): void {
     this.isEditMode = false;
     this.selectedCity = this.emptyCity();
     this.showModal = true;
   }
 
-  // Open the modal for editing an existing city
+  // Open modal for editing an existing city
   openEditModal(city: City): void {
     this.isEditMode = true;
     this.selectedCity = { ...city };
@@ -84,76 +86,111 @@ export class CityComponent implements OnInit {
     this.showModal = false;
   }
 
-  // Handle form submission
-  handleSubmit(): void {
+  // Save city (create or update)
+  saveCity(): void {
     if (this.isEditMode) {
-      this.unitOfWork.City.update(this.selectedCity.id!, this.selectedCity).subscribe({
-        next: () => {
-          this.toastr.success('City updated successfully', 'Success');
-          this.loadCities();
-          this.closeModal();
-        },
-        error: (err) => {
-          this.toastr.error('Failed to update city', 'Error');
-          console.error(err);
-        },
-      });
+      this.updateCity();
     } else {
-      this.unitOfWork.City.create(this.selectedCity).subscribe({
-        next: () => {
-          this.toastr.success('City added successfully', 'Success');
-          this.loadCities();
-          this.closeModal();
-        },
-        error: (err) => {
-          this.toastr.error('Failed to add city', 'Error');
-          console.error(err);
-        },
-      });
+      this.createCity();
     }
+  }
+
+  // Create a new city
+  createCity(): void {
+    this.unitOfWork.City.create(this.selectedCity).subscribe({
+      next: () => {
+        this.toastr.success('تم إضافة المدينة بنجاح');
+        this.loadCities();
+        this.closeModal();
+      },
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
+      },
+    });
+  }
+
+  // Update an existing city
+  updateCity(): void {
+    this.unitOfWork.City.update(this.selectedCity.id!, this.selectedCity).subscribe({
+      next: () => {
+        this.toastr.success('تم تحديث المدينة بنجاح');
+        this.loadCities();
+        this.closeModal();
+      },
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
+      },
+    });
+  }
+
+  // Confirm city deletion
+  confirmDelete(id: number): void {
+    this.deletingId = id;
+  }
+
+  // Cancel city deletion
+  cancelDelete(): void {
+    this.deletingId = null;
   }
 
   // Delete a city
   deleteCity(id: number): void {
-    if (confirm('Are you sure you want to delete this city?')) {
-      this.unitOfWork.City.delete(id).subscribe({
-        next: () => {
-          this.toastr.success('City deleted successfully', 'Success');
-          this.loadCities();
-        },
-        error: (err) => {
-          this.toastr.error('Failed to delete city', 'Error');
-          console.error(err);
-        },
-      });
-    }
+    this.unitOfWork.City.delete(id).subscribe({
+      next: () => {
+        this.toastr.success('تم حذف المدينة بنجاح');
+        this.loadCities();
+        this.deletingId = null;
+      },
+      error: (error) => {
+        const message = this.getErrorMessage(error);
+        this.toastr.error(message);
+        this.deletingId = null;
+      },
+    });
   }
 
   // Pagination methods
   private calculateTotalPages(): void {
     this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+    if (this.totalPages === 0) this.totalPages = 1;
   }
 
   private updatePageNumbers(): void {
     this.pages = [];
     const maxVisiblePages = 5;
     let start = Math.max(1, this.PageNumber - Math.floor(maxVisiblePages / 2));
-    let end = start + maxVisiblePages - 1;
+    let end = Math.min(this.totalPages, start + maxVisiblePages - 1);
 
-    start = Math.max(1, start);
+    if (end === this.totalPages) {
+      start = Math.max(1, end - maxVisiblePages + 1);
+    }
+
     for (let i = start; i <= end; i++) {
       this.pages.push(i);
     }
   }
 
   nextPage(): void {
-    this.PageNumber++;
-    this.loadCities();
+    if (this.PageNumber < this.totalPages) {
+      this.PageNumber++;
+      this.loadCities();
+    }
   }
 
   prevPage(): void {
-    this.PageNumber = Math.max(1, this.PageNumber - 1);
-    this.loadCities();
+    if (this.PageNumber > 1) {
+      this.PageNumber--;
+      this.loadCities();
+    }
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.PageNumber) {
+      this.PageNumber = page;
+      this.loadCities();
+    }
   }
 
   onPageSizeChange(newSize: number): void {
@@ -162,7 +199,10 @@ export class CityComponent implements OnInit {
     this.loadCities();
   }
 
-  // Initialize an empty city
+  private getErrorMessage(error: any): string {
+    return error.message || 'حدث خطأ غير معروف';
+  }
+
   private emptyCity(): Partial<City> {
     return {
       id: 0,
