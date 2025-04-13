@@ -3,14 +3,14 @@
   <!-- Page Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0 text-primary">
-      <i class="fas fa-building me-2"></i> إدارة الفروع
+      <i class="fas fa-truck me-2"></i> إدارة أنواع الشحن
     </h2>
     <button class="btn btn-primary" (click)="openCreateModal()">
-      <i class="fas fa-plus-circle me-2"></i>إضافة فرع جديد
+      <i class="fas fa-plus-circle me-2"></i>إضافة نوع شحن جديد
     </button>
   </div>
 
-  <!-- Branches Table -->
+  <!-- Shipping Types Table -->
   <div class="card shadow-lg border-0">
     <div class="card-body p-0">
       <div class="table-responsive-lg">
@@ -18,44 +18,36 @@
           <thead class="bg-light-primary">
             <tr>
               <th class="py-3">#</th>
-              <th class="py-3">اسم الفرع</th>
-              <th class="py-3">الموقع</th>
+              <th class="py-3">اسم نوع الشحن</th>
+              <th class="py-3">التكلفة الأساسية</th>
+              <th class="py-3">المدة (بالأيام)</th>
               <th class="py-3">تاريخ الإنشاء</th>
-              <th class="py-3 text-center">الحالة</th>
               <th class="py-3 text-center">الاعدادات</th>
             </tr>
           </thead>
           <tbody>
-            @for(branch of branches;track branch.id;let i=$index){
+            @for(shippingType of shippingTypes;track shippingType.id;let
+            i=$index){
             <tr class="transition">
               <td class="align-middle">
                 {{ (PageNumber - 1) * pageSize + i + 1 }}
               </td>
-              <td class="align-middle fw-medium">{{ branch.name }}</td>
-              <td class="align-middle">{{ branch.location }}</td>
+              <td class="align-middle fw-medium">{{ shippingType.name }}</td>
+              <td class="align-middle">{{ shippingType.baseCost }}</td>
+              <td class="align-middle">{{ shippingType.duration }}</td>
               <td class="align-middle">
-                {{ branch.branchDate | date : "mediumDate" }}
-              </td>
-              <td class="align-middle text-center">
-                <label class="switch">
-                  <input
-                    type="checkbox"
-                    [checked]="!branch.isDeleted"
-                    (change)="toggleBranchStatus(branch)"
-                  />
-                  <span class="slider round"></span>
-                </label>
+                {{ shippingType.createdAt | date : "mediumDate" }}
               </td>
               <td class="align-middle text-center">
                 <div class="btn-group" role="group">
                   <button
-                    (click)="openEditModal(branch)"
+                    (click)="openEditModal(shippingType)"
                     class="btn btn-sm btn-primary me-1"
                   >
                     <i class="fas fa-edit"></i>
                   </button>
                   <button
-                    (click)="confirmDelete(branch.id)"
+                    (click)="confirmDelete(shippingType.id)"
                     class="btn btn-sm btn-danger me-2"
                   >
                     <i class="fas fa-trash"></i>
@@ -63,9 +55,11 @@
                 </div>
               </td>
             </tr>
-            } @if(branches.length === 0){
+            } @if(shippingTypes.length === 0){
             <tr>
-              <td colspan="6" class="text-center py-3">لا توجد فروع للعرض</td>
+              <td colspan="6" class="text-center py-3">
+                لا توجد أنواع شحن للعرض
+              </td>
             </tr>
             }
           </tbody>
@@ -73,6 +67,7 @@
       </div>
     </div>
   </div>
+
   <!-- Pagination Controls -->
   <div class="d-flex justify-content-between align-items-center mt-3">
     <div>
@@ -128,7 +123,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
-            {{ isEditMode ? "تعديل الفرع" : "إضافة فرع جديد" }}
+            {{ isEditMode ? "تعديل نوع الشحن" : "إضافة نوع شحن جديد" }}
           </h5>
           <button
             type="button"
@@ -138,61 +133,50 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
-            <label for="branchName" class="form-label">اسم الفرع</label>
-            <input
-              type="text"
-              class="form-control"
-              id="branchName"
-              [(ngModel)]="selectedBranch.name"
-              placeholder="أدخل اسم الفرع"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="branchLocation" class="form-label">موقع الفرع</label>
-            <input
-              type="text"
-              class="form-control"
-              id="branchLocation"
-              [(ngModel)]="selectedBranch.location"
-              placeholder="أدخل موقع الفرع"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="regionId" class="form-label">المنطقة</label>
-            <select
-              class="form-select"
-              id="regionId"
-              [(ngModel)]="selectedBranch.regionId"
-              required
+            <label for="shippingTypeName" class="form-label"
+              >اسم نوع الشحن</label
             >
-              <option [ngValue]="0" disabled>اختر المنطقة</option>
-              <option *ngFor="let region of regions" [ngValue]="region.id">
-                {{ region.governorate }}
-              </option>
-            </select>
+            <input
+              type="text"
+              class="form-control"
+              id="shippingTypeName"
+              [(ngModel)]="selectedShippingType.name"
+              placeholder="أدخل اسم نوع الشحن"
+              required
+            />
           </div>
           <div class="mb-3">
-            <label for="branchDate" class="form-label">تاريخ الإنشاء</label>
+            <label for="baseCost" class="form-label">التكلفة الأساسية</label>
+            <input
+              type="number"
+              class="form-control"
+              id="baseCost"
+              [(ngModel)]="selectedShippingType.baseCost"
+              placeholder="أدخل التكلفة الأساسية"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="duration" class="form-label">المدة (بالأيام)</label>
+            <input
+              type="number"
+              class="form-control"
+              id="duration"
+              [(ngModel)]="selectedShippingType.duration"
+              placeholder="أدخل المدة بالأيام"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="createdAt" class="form-label">تاريخ الإنشاء</label>
             <input
               type="date"
               class="form-control"
-              id="branchDate"
-              [ngModel]="selectedBranch.branchDate | date : 'yyyy-MM-dd'"
-              (ngModelChange)="selectedBranch.branchDate = $event"
+              id="createdAt"
+              [ngModel]="selectedShippingType.createdAt | date : 'yyyy-MM-dd'"
+              (ngModelChange)="selectedShippingType.createdAt = $event"
               required
             />
-          </div>
-          <div class="form-check mb-3">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="isActive"
-              [checked]="!selectedBranch.isDeleted"
-              (change)="selectedBranch.isDeleted = !selectedBranch.isDeleted"
-            />
-            <label class="form-check-label" for="isActive"> الفرع نشط </label>
           </div>
         </div>
         <div class="modal-footer">
@@ -203,7 +187,11 @@
           >
             إلغاء
           </button>
-          <button type="button" class="btn btn-primary" (click)="saveBranch()">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="saveShippingType()"
+          >
             حفظ
           </button>
         </div>
@@ -229,7 +217,7 @@
           ></button>
         </div>
         <div class="modal-body">
-          <p>هل أنت متأكد من حذف هذا الفرع؟</p>
+          <p>هل أنت متأكد من حذف نوع الشحن هذا؟</p>
         </div>
         <div class="modal-footer">
           <button
@@ -242,7 +230,7 @@
           <button
             type="button"
             class="btn btn-danger"
-            (click)="deleteBranch(deletingId!)"
+            (click)="deleteShippingType(deletingId!)"
           >
             حذف
           </button>

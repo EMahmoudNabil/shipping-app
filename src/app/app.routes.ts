@@ -5,6 +5,7 @@ import { MainSystemComponent } from './features/main-system/main-system.componen
 import { AddCityComponent } from './shared/components/add-city/add-city.component';
 import { RegionComponent } from './shared/components/region/region.component';
 import { BranchComponent } from './shared/components/branch/branch.component';
+import { ShippingTypeComponent } from './shared/components/shipping-type/shipping-type.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },  // إعادة التوجيه إلى login إذا لم يكن هناك مسار آخر
@@ -16,7 +17,9 @@ export const routes: Routes = [
     children: [
       { path: '', component: MainSystemComponent }, // الصفحة الرئيسية
       { path: 'regions', component: RegionComponent }, // سيظهر داخل الـ main
-      {path:'branches',component:BranchComponent}
+      {path:'branches',component:BranchComponent},
+      {path:'Shippingtypes',component:ShippingTypeComponent}
+
 
     ], canActivate: [AuthGuard]
   }
