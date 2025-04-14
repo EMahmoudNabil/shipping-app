@@ -72,15 +72,19 @@
         </a>
       </li>
       <li>
-        <a routerLink="/couriers/add" routerLinkActive="active">
+        <a routerLink="/addCourier" routerLinkActive="active">
           <i class="fas fa-user-plus navicon"></i>إضافة مندوب
         </a>
       </li>
-
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center" routerLink="/order-reports" routerLinkActive="active">
+          <i class="fas fa-file-alt me-2"></i>
+          تقارير الطلبات
+        </a>
+      </li>
       <li>
         <a (click)="logout()"
-          ><i class="bi bi-box-arrow-left navicon"></i> تسجيل الخروج</a
-        >
+          ><i class="bi bi-box-arrow-left navicon"></i> تسجيل الخروج</a>
       </li>
     </ul>
   </nav>
