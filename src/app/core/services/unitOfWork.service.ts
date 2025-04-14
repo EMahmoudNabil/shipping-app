@@ -7,11 +7,13 @@ import { WeightSettingService } from './WeightSetting.Service';
 import { CourierService } from "./Courier.Service";
 
 import { BranchService} from './branch.service';
-import { ShippingTypeService } from '../../models/ShippingTypeService ';
+
 
 import { EmployeeService } from './Employee.Service';
 
 import { MerchantService } from './Merchant.service';
+import { OrderService } from './order.service';
+import { ShippingTypeService } from './ShippingTypeService ';
 
 
 @Injectable({
@@ -29,6 +31,7 @@ export class UnitOfWorkServices{
         public Courier: CourierService,
         public Branch: BranchService,
         public ShippingType:ShippingTypeService,
-        public Merchant: MerchantService
+        public Merchant: MerchantService,
+        public AddOrder: OrderService,
     ) {}
 }

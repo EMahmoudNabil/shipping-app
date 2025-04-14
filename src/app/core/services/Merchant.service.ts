@@ -16,7 +16,7 @@ export class MerchantService implements GenericCURD<Merchant> {
   constructor(private http: HttpClient) {}
   
   getAll(): Observable<Merchant[]> {
-    throw new Error('Method not implemented.');
+      return this.http.get<Merchant[]>(`${this.apiUrl}/Merchants`); //error
   }
   
   getById(id: number | string): Observable<Merchant> {
@@ -52,4 +52,7 @@ export class MerchantService implements GenericCURD<Merchant> {
     // Send the formatted data to the API
     return this.http.post<Merchant>(this.apiUrl, merchantData);
   }
+
+
+
 }

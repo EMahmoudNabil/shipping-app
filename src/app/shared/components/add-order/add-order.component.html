@@ -1,0 +1,201 @@
+<!-- [title]="'إضافة طلب جديد'" -->
+<app-page-header
+
+  [path]="[
+    { name: 'الطلبات', link: '/orders' },
+    { name: 'إضافة طلب', link: '/orders/add' }
+  ]">
+</app-page-header>
+
+<div class="section">
+  <div class="container mt-4">
+    <h2 class="text-end mb-4">إضافة طلب جديد</h2>
+
+    <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+      <!-- قسم معلومات التاجر -->
+      <div class="row mb-3" *ngIf="isEmployee">
+        <div class="col-md-6">
+          <label class="form-label required">اسم التاجر</label>
+          <select class="form-select" formControlName="merchantName"
+                  [class.is-invalid]="orderForm.get('merchantName')?.invalid">
+            <option value="" disabled>اختر التاجر</option>
+            <option *ngFor="let merchant of merchants" [value]="merchant.id">
+              {{ merchant.fullName }}
+            </option>
+          </select>
+          <small *ngIf="orderForm.get('merchantName')?.invalid" class="text-danger">
+            حقل مطلوب
+          </small>
+        </div>
+      </div>
+
+      <!-- معلومات الشحن والدفع -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label required">نوع الطلب</label>
+          <select class="form-select" formControlName="orderTypes"
+                  [class.is-invalid]="orderForm.get('orderTypes')?.invalid">
+            <option value="0">طلب عادي</option>
+            <option value="1">طلب سريع</option>
+            <option value="2">طلب مخصص</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label required">نوع الشحن</label>
+          <select class="form-select" formControlName="isOutOfCityShipping"
+                  [class.is-invalid]="orderForm.get('isOutOfCityShipping')?.invalid">
+            <option [value]="true">خارج المدينة</option>
+            <option [value]="false">داخل المدينة</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label required">طريقة الدفع</label>
+          <select class="form-select" formControlName="paymentType"
+                  [class.is-invalid]="orderForm.get('paymentType')?.invalid">
+            <option value="0">نقدي</option>
+            <option value="1">بطاقة ائتمان</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- معلومات الموقع -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label required">الفرع</label>
+          <select class="form-select" formControlName="branch"
+                  [class.is-invalid]="orderForm.get('branch')?.invalid">
+            <option value="" disabled>اختر الفرع</option>
+            <option *ngFor="let branch of branches" [value]="branch.id">
+              {{ branch.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label required">المنطقة</label>
+          <select class="form-select" formControlName="region"
+                  [class.is-invalid]="orderForm.get('region')?.invalid">
+            <option value="" disabled>اختر المنطقة</option>
+            <option *ngFor="let region of regions" [value]="region.id">
+              {{ region.governorate }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label required">المدينة</label>
+          <select class="form-select" formControlName="city"
+                  [class.is-invalid]="orderForm.get('city')?.invalid">
+            <option value="" disabled>اختر المدينة</option>
+            <option *ngFor="let city of cities" [value]="city.id">
+              {{ city.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- معلومات العميل -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label required">اسم العميل</label>
+          <input type="text" class="form-control" formControlName="customerName"
+                 [class.is-invalid]="orderForm.get('customerName')?.invalid">
+          <small *ngIf="orderForm.get('customerName')?.errors?.['required']" class="text-danger">
+            حقل مطلوب
+          </small>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label required">رقم الهاتف الأساسي</label>
+          <input type="tel" class="form-control" formControlName="customerPhone1"
+                 [class.is-invalid]="orderForm.get('customerPhone1')?.invalid">
+          <small *ngIf="orderForm.get('customerPhone1')?.errors?.['pattern']" class="text-danger">
+            رقم هاتف غير صالح
+          </small>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">رقم الهاتف الثانوي</label>
+          <input type="tel" class="form-control" formControlName="customerPhone2">
+        </div>
+      </div>
+
+      <!-- العنوان والبريد الإلكتروني -->
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <label class="form-label required">العنوان التفصيلي</label>
+          <input type="text" class="form-control" formControlName="customerAddress"
+                 [class.is-invalid]="orderForm.get('customerAddress')?.invalid">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input type="email" class="form-control" formControlName="customerEmail">
+        </div>
+      </div>
+
+      <!-- المنتجات -->
+      <div formArrayName="products" class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4>المنتجات</h4>
+          <button type="button" class="btn btn-primary" (click)="addProduct()">
+            <i class="fas fa-plus"></i> إضافة منتج
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>اسم المنتج</th>
+                <th>الكمية</th>
+                <th>الوزن (كجم)</th>
+                <th>الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of products.controls; let i = index" [formGroupName]="i">
+                <td>
+                  <input type="text" class="form-control" formControlName="name">
+                </td>
+                <td>
+                  <input type="number" class="form-control" formControlName="quantity">
+                </td>
+                <td>
+                  <input type="number" class="form-control" formControlName="weight">
+                </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="removeProduct(i)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- التكاليف الإجمالية -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <label class="form-label">الوزن الإجمالي (كجم)</label>
+          <input type="number" class="form-control" formControlName="totalWeight" readonly>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">التكلفة الإجمالية</label>
+          <input type="number" class="form-control" formControlName="orderCost" readonly>
+        </div>
+      </div>
+
+      <!-- زر الحفظ -->
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-success btn-lg" [disabled]="orderForm.invalid">
+          <i class="fas fa-save"></i> حفظ الطلب
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { GenericCURD } from './Generic.interface';
-import { environment } from '../environment';
-import { ShippingType } from './ShippingType.Interface';
+import { GenericCURD } from '../../models/Generic.interface';
+import { ShippingType } from '../../models/ShippingType.Interface';
+import { environment } from '../../environment';
+
 
 
 @Injectable({

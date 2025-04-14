@@ -13,6 +13,7 @@ import { AddEmployeeComponent } from './shared/components/add-employee/add-emplo
 import { MerchantService } from './core/services/Merchant.service';
 import { MerchantComponent } from './shared/components/merchant/merchant.component';
 import { AddCourierComponent } from './shared/components/courier/add-courier/add-courier.component';
+import { AddOrderComponent } from './shared/components/add-order/add-order.component';
 
 
 
@@ -34,7 +35,8 @@ export const routes: Routes = [
 
       {path:'add-employee',component:AddEmployeeComponent },
 
-      {path:'addMerchant',component:MerchantComponent}
+      {path:'addMerchant',component:MerchantComponent},
+      {path:'orders/add',component:AddOrderComponent}
 
     ], canActivate: [AuthGuard]
   }
