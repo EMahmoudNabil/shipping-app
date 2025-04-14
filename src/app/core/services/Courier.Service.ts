@@ -4,20 +4,32 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environment';
 import { Courier } from '../../models/Courier.interface';
 
+
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class CourierService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private apiUrl = `${environment.apiUrl}/api/Auth/addCourier`;
 
   constructor(private http: HttpClient) {}
-
-  addCourier(courier: Courier): Observable<string> {
-    // Corrected URL to include /Courier
-    return this.http.post<string>(`${this.apiUrl}/Auth/AddCourier`, courier);
-  }
-
-  getBranches(): Observable<{ id: number; name: string }[]> {
-    return this.http.get<{ id: number; name: string }[]>(`${this.apiUrl}/Branch`);
+  
+  create(courier: Courier): Observable<any> {
+    const courierData = {
+      email: courier.email,
+      password: courier.password,
+      fullName: courier.fullName,
+      phoneNumber: courier.phoneNumber,
+      address: courier.address,
+      branchId: courier.branchId,
+      deductionType: courier.deductionType,
+      deductionCompanyFromOrder: courier.deductionCompanyFromOrder,
+      specialCourierRegions: courier.specialCourierRegions.length > 0 ? courier.specialCourierRegions : null,
+      roleName: "Courier" // Required by the backend
+    };
+    
+    console.log('Sending data to API:', courierData);
+    
+    // Send the formatted data to the API
+    return this.http.post<any>(this.apiUrl, courierData);
   }
 }

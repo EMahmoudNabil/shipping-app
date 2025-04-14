@@ -12,7 +12,8 @@ import { AddEmployeeComponent } from './shared/components/add-employee/add-emplo
 
 import { MerchantService } from './core/services/Merchant.service';
 import { MerchantComponent } from './shared/components/merchant/merchant.component';
-import { AddCourierComponent } from './shared/components/courier/add-courier/add-courier.component';
+import { CourierComponent } from './shared/components/courier/courier.component';
+
 
 
 
@@ -28,7 +29,7 @@ export const routes: Routes = [
       { path: 'regions', component: RegionComponent }, // سيظهر داخل الـ main HEAD
       { path: 'weightsettings', component: WeightSettingComponent }, 
       { path: 'cities', component: CityComponent },
-      { path: 'couriers/add', component: AddCourierComponent }, // Add Courier page
+      { path: 'addCourier', component: CourierComponent }, // Add Courier page
       {path:'branches',component:BranchComponent},
       {path:'Shippingtypes',component:ShippingTypeComponent},
 
