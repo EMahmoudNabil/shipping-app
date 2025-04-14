@@ -13,29 +13,29 @@ import { AddEmployeeComponent } from './shared/components/add-employee/add-emplo
 import { MerchantService } from './core/services/Merchant.service';
 import { MerchantComponent } from './shared/components/merchant/merchant.component';
 import { CourierComponent } from './shared/components/courier/courier.component';
+import { OrderReportComponent } from './shared/components/order-report/order-report.component';
 
 
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/login', pathMatch: 'full' },  // إعادة التوجيه إلى login إذا لم يكن هناك مسار آخر
-  { path: 'login', component: LoginComponent },  // مسار صفحة تسجيل الدخول
+    { path: '', redirectTo: '/login', pathMatch: 'full' }, 
+  { path: 'login', component: LoginComponent },  
   { path: 'dashboard', component: MainSystemComponent, canActivate: [AuthGuard] },
   {
     path: '',
-    component: MainSystemComponent, // المكون الرئيسي الذي يحتوي على الهيكل
+    component: MainSystemComponent, 
     children: [
-      { path: '', component: MainSystemComponent }, // الصفحة الرئيسية
-      { path: 'regions', component: RegionComponent }, // سيظهر داخل الـ main HEAD
+      { path: '', component: MainSystemComponent }, 
+      { path: 'regions', component: RegionComponent },
       { path: 'weightsettings', component: WeightSettingComponent }, 
       { path: 'cities', component: CityComponent },
-      { path: 'addCourier', component: CourierComponent }, // Add Courier page
+      { path: 'addCourier', component: CourierComponent },
       {path:'branches',component:BranchComponent},
       {path:'Shippingtypes',component:ShippingTypeComponent},
-
       {path:'add-employee',component:AddEmployeeComponent },
-
-      {path:'addMerchant',component:MerchantComponent}
+      {path:'addMerchant',component:MerchantComponent},
+      { path: 'order-reports', component: OrderReportComponent },
 
     ], canActivate: [AuthGuard]
   }
