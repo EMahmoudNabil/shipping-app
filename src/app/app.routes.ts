@@ -41,9 +41,8 @@ export const routes: Routes = [
 
       {path:'addMerchant',component:MerchantComponent},
       {path:'orders/add',component:AddOrderComponent},
-
-      {path:'addMerchant',component:MerchantComponent},
       { path: 'order-reports', component: OrderReportComponent },
+      {path:'addMerchant',component:MerchantComponent},
 
 
     ], canActivate: [AuthGuard]

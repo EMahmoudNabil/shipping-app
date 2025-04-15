@@ -1,154 +1,126 @@
-<div class="container mt-5 arabic-style">
-  <!-- Page Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0 text-warning bg-dark p-2 rounded">
-      <i class="fas fa-file-alt me-2"></i> تقرير الطلبات
-    </h2>
-  </div>
-
-  <!-- Filter Section -->
-  <div class="card shadow-lg border-0 mb-4">
-    <div class="card-body">
-      <form (ngSubmit)="filterReports()">
-        <div class="row">
-          <!-- Order Status Filter -->
-          <div class="col-md-4 mb-3">
-            <label for="statusFilter" class="form-label">الحالات</label>
-            <select
-              class="form-select"
-              id="statusFilter"
-              [(ngModel)]="filters.status"
-              name="status"
-            >
-              <option value="">اختر الحالة</option>
-              <option *ngFor="let status of statuses" [value]="status">
-                {{ status }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Date Range Filters -->
-          <div class="col-md-4 mb-3">
-            <label for="startDate" class="form-label">من</label>
-            <input
-              type="date"
-              class="form-control"
-              id="startDate"
-              [(ngModel)]="filters.startDate"
-              name="startDate"
-            />
-          </div>
-          <div class="col-md-4 mb-3">
-            <label for="endDate" class="form-label">إلى</label>
-            <input
-              type="date"
-              class="form-control"
-              id="endDate"
-              [(ngModel)]="filters.endDate"
-              name="endDate"
-            />
-          </div>
-        </div>
-
-        <!-- Search Button -->
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-search me-2"></i> بحث
-        </button>
-      </form>
+<div class="container mt-5 arabic-style" dir="rtl">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0 text-black bg-warning p-2 rounded">
+        <i class="fas fa-file-alt me-2"></i> تقرير الطلبات
+      </h2>
     </div>
-  </div>
-
-  <!-- Order Reports Table -->
-  <div class="card shadow-lg border-0">
-    <div class="card-body p-0">
-      <div class="table-responsive-lg">
-        <table class="table table-hover mb-0">
-          <thead class="bg-light-primary">
-            <tr>
-              <th>الرقم التسلسلي</th>
-              <th>الحالة</th>
-              <th>التاجر</th>
-              <th>العميل</th>
-              <th>رقم الهاتف</th>
-              <th>المحافظة</th>
-              <th>المدينة</th>
-              <th>تكلفة الطلب</th>
-              <th>المبلغ المستلم</th>
-              <th>تكلفة الشحن</th>
-              <th>قيمة الشحن المدفوعة</th>
-              <th>قيمة الشركة</th>
-              <th>التاريخ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let report of orderReports; let i = index">
-              <td>{{ (PageNumber - 1) * pageSize + i + 1 }}</td>
-              <td>{{ report.status }}</td>
-              <td>{{ report.merchantName }}</td>
-              <td>{{ report.customerName }}</td>
-              <td>{{ report.customerPhone1 }}</td>
-              <td>{{ report.regionName }}</td>
-              <td>{{ report.branchName }}</td>
-              <td>{{ report.orderCost }}</td>
-              <td>{{ report.amountReceived }}</td>
-              <td>{{ report.shippingCost }}</td>
-              <td>{{ report.shippingCostPaid }}</td>
-              <td>{{ report.companyValue }}</td>
-              <td>{{ report.reportDate | date: 'mediumDate' }}</td>
-            </tr>
-            <tr *ngIf="orderReports.length === 0">
-              <td colspan="13" class="text-center py-3">
-                لا توجد بيانات متاحة في الجدول
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary me-2" (click)="sortReportsByDate('asc')">
+          <i class="fas fa-sort-amount-up me-1"></i> ترتيب حسب التاريخ (تصاعدي)
+        </button>
+        <button class="btn btn-primary" (click)="sortReportsByDate('desc')">
+          <i class="fas fa-sort-amount-down me-1"></i> ترتيب حسب التاريخ (تنازلي)
+        </button>
+      </div> -->
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-outline-primary btn-lg me-2" (click)="sortReportsByDate('asc')">
+          <i class="fas fa-sort-amount-up me-1"></i> ترتيب حسب التاريخ (تصاعدي)
+        </button>
+        <button class="btn btn-outline-primary btn-lg" (click)="sortReportsByDate('desc')">
+          <i class="fas fa-sort-amount-down me-1"></i> ترتيب حسب التاريخ (تنازلي)
+        </button>
+      </div>
+  
+    <!-- Filter Section -->
+    <div class="card shadow-lg border-0 mb-4">
+      <div class="card-body p-4">
+        <form (ngSubmit)="searchReports()">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="orderStatus" class="form-label">الحالات</label>
+              <select
+                class="form-select"
+                id="orderStatus"
+                [(ngModel)]="filters.orderStatus"
+                name="orderStatus"
+              >
+                <option value="">اختر الحالة</option>
+                <option *ngFor="let status of orderStatuses" [value]="status.value">
+                  {{ status.label }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="startDate" class="form-label">من</label>
+              <input
+                type="date"
+                class="form-control"
+                id="startDate"
+                [(ngModel)]="filters.startDate"
+                name="startDate"
+              />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="endDate" class="form-label">إلى</label>
+              <input
+                type="date"
+                class="form-control"
+                id="endDate"
+                [(ngModel)]="filters.endDate"
+                name="endDate"
+              />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search me-2"></i> بحث
+          </button>
+        </form>
       </div>
     </div>
-  </div>
-
-  <!-- Pagination Controls -->
-  <div class="d-flex justify-content-between align-items-center mt-3">
-    <div>
-      <select
-        class="form-select"
-        [(ngModel)]="pageSize"
-        (change)="onPageSizeChange(pageSize)"
-      >
-        <option [value]="5">5 عناصر</option>
-        <option [value]="10">10 عناصر</option>
-        <option [value]="20">20 عناصر</option>
-      </select>
+  
+    <!-- Table Section -->
+    <div class="table-responsive-lg">
+      <table class="table table-hover mb-0">
+        <thead class="bg-light-primary">
+          <tr>
+            <th>الرقم التسلسلي</th>
+            <th>الحالة</th>
+            <th>التاجر</th>
+            <th>العميل</th>
+            <th>رقم الهاتف</th>
+            <th>المحافظة</th>
+            <th>المدينة</th>
+            <th>تكلفة الطلب</th>
+            <th>المبلغ المستلم</th>
+            <th>تكلفة الشحن</th>
+            <th>قيمة الشحن المدفوعة</th>
+            <th>قيمة الشركة</th>
+            <th>التاريخ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let report of orderReports">
+            <td>{{ report.id }}</td>
+            <td>{{ report.orderStatus }}</td>
+            <td>{{ report.merchantName }}</td>
+            <td>{{ report.customerName }}</td>
+            <td>{{ report.customerPhone1 }}</td>
+            <td>{{ report.regionName }}</td>
+            <td>{{ report.cityName }}</td>
+            <td>{{ report.orderCost }}</td>
+            <td>{{ report.amountReceived }}</td>
+            <td>{{ report.shippingCost }}</td>
+            <td>{{ report.shippingCostPaid }}</td>
+            <td>{{ report.companyValue }}</td>
+            <td>{{ report.reportDate ? (report.reportDate | date: 'yyyy-MM-dd') : '-' }}</td>
+          </tr>
+          <tr *ngIf="orderReports.length === 0">
+            <td colspan="13" class="text-center py-3">لا توجد بيانات</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <li class="page-item" [class.disabled]="PageNumber === 1">
-          <a class="page-link" href="javascript:void(0)" (click)="prevPage()">
-            <i class="fas fa-chevron-right"></i> السابق
-          </a>
-        </li>
-
-        <li
-          class="page-item"
-          *ngFor="let page of pages"
-          [class.active]="page === PageNumber"
-        >
-          <a
-            class="page-link"
-            href="javascript:void(0)"
-            (click)="goToPage(page)"
-          >
-            {{ page }}
-          </a>
-        </li>
-
-        <li class="page-item" [class.disabled]="PageNumber === totalPages">
-          <a class="page-link" href="javascript:void(0)" (click)="nextPage()">
-            التالي <i class="fas fa-chevron-left"></i>
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <button class="btn btn-secondary" (click)="prevPage()" [disabled]="pageNumber === 1">
+        <i class="fas fa-chevron-right"></i> السابق
+      </button>
+      <span>الصفحة {{ pageNumber }} من {{ totalPages }}</span>
+      <button class="btn btn-secondary" (click)="nextPage()" [disabled]="pageNumber === totalPages">
+        التالي <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
   </div>
-</div>
+
+  
