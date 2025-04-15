@@ -20,7 +20,14 @@ export class OrderReportComponent implements OnInit {
     { value: 'InProgress', label: 'قيد التنفيذ' },
     { value: 'Delivered', label: 'تم التسليم' },
     { value: 'Cancelled', label: 'تم الإلغاء' },
-    { value: 'Declined', label: 'مرفوض' },
+    { value: 'AwaitingConfirmation', label: 'في انتظار التأكيد' },
+    { value: 'Rejected', label: 'مرفوض' },
+    { value: 'Shipped', label: 'تم الشحن' },
+    { value: 'Received', label: 'تم الاستلام' },
+    { value: 'Returned', label: 'تم الإرجاع' },
+    { value: 'Payed', label: 'تم الدفع' },
+    { value: 'PendingReview', label: 'قيد المراجعة' },
+    { value: 'Updated', label: 'تم التحديث' },
   ];
   filters = {
     orderStatus: '',

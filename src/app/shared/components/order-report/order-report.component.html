@@ -99,10 +99,10 @@
             <td>{{ report.regionName }}</td>
             <td>{{ report.cityName }}</td>
             <td>{{ report.orderCost }}</td>
-            <td>{{ report.amountReceived }}</td>
+            <td>{{ report.amountReceived  }}</td>
             <td>{{ report.shippingCost }}</td>
-            <td>{{ report.shippingCostPaid }}</td>
-            <td>{{ report.companyValue }}</td>
+            <td>{{ report.shippingCostPaid  }}</td>
+            <td>{{ report.companyValue  }}</td>
             <td>{{ report.reportDate ? (report.reportDate | date: 'yyyy-MM-dd') : '-' }}</td>
           </tr>
           <tr *ngIf="orderReports.length === 0">
