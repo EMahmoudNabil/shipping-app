@@ -15,7 +15,7 @@ import { PageHeaderComponent } from "../page-header/page-header.component";
 
 @Component({
   selector: 'app-add-order',
-  imports: [CommonModule, // <-- Add these
+  imports: [CommonModule,
     ReactiveFormsModule, PageHeaderComponent],
   templateUrl: './add-order.component.html',
   styleUrl: './add-order.component.css'
@@ -88,10 +88,10 @@ export class AddOrderComponent  implements OnInit {
       error: (err) => this.showError('فشل تحميل المناطق', err)
     });
 
-    this._unitOfWork.City.getAll().subscribe({
-      next: (cities) => this.cities = cities,
-      error: (err) => this.showError('فشل تحميل المدن', err)
-    });
+    // this._unitOfWork.City.getAll().subscribe({
+    //   next: (cities) => this.cities = cities,
+    //   error: (err) => this.showError('فشل تحميل المدن', err)
+    // });
 
     if (this.isEmployee) {
       this._unitOfWork.Merchant.getAll().subscribe({
@@ -101,6 +101,25 @@ export class AddOrderComponent  implements OnInit {
     }
   }
 
+  loadCities(regionId: number): void {
+    if (!regionId) return;
+    this._unitOfWork.City.getByRegionId(regionId).subscribe({
+      next: (data) => {
+        this.cities = data;
+       
+      },
+      error: (error) => {
+        this.toastr.error('فشل تحميل المدن');
+      }
+    });
+  }
+  
+  onRegionChange(): void {
+    const regionId = this.orderForm.get('region')?.value;
+    if (regionId) {
+      this.loadCities(regionId);
+    }
+  }
   get products(): FormArray {
     return this.orderForm.get('products') as FormArray;
   }

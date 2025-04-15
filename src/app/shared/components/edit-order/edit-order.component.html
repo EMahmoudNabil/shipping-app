@@ -1,0 +1,184 @@
+<div class="container mt-4">
+  <app-page-header
+    [path]="[
+      { name: 'الطلبات', link: '/orders' },
+      { name: 'تعديل الطلب', link: '' }
+    ]"
+  >
+  </app-page-header>
+
+  <div *ngIf="loading" class="text-center my-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">جاري التحميل...</span>
+    </div>
+  </div>
+
+  <form
+    [formGroup]="orderForm"
+    (ngSubmit)="onSubmit()"
+    *ngIf="!loading"
+    class="row g-3"
+  >
+    <!-- Status Section -->
+    <div class="col-md-6">
+      <label class="form-label required">حالة الطلب</label>
+      <select formControlName="status" class="form-select">
+        <option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          orderForm.get('status')?.invalid && orderForm.get('status')?.touched
+        "
+        class="validation-error"
+      >
+        يجب اختيار حالة الطلب
+      </div>
+    </div>
+
+    <!-- Shipping Details -->
+    <div class="col-md-6">
+      <label class="form-label required">نوع الشحن</label>
+      <select formControlName="shippingId" class="form-select">
+        <option value="0">شحن عادي</option>
+        <option value="1">شحن سريع</option>
+      </select>
+      <div
+        *ngIf="
+          orderForm.get('shippingId')?.invalid &&
+          orderForm.get('shippingId')?.touched
+        "
+        class="validation-error"
+      >
+        يجب اختيار نوع الشحن
+      </div>
+    </div>
+
+    <!-- Location Details -->
+    <div class="col-md-4">
+      <label class="form-label required">الفرع</label>
+      <select formControlName="branch" class="form-select">
+        <option [value]="branch.id" *ngFor="let branch of branches">
+          {{ branch.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label required">المنطقة</label>
+      <select
+        formControlName="region"
+        class="form-select"
+        (change)="onRegionChange()"
+      >
+        <option [value]="region.id" *ngFor="let region of regions">
+          {{ region.governorate }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label required">المدينة</label>
+      <select formControlName="city" class="form-select">
+        <option [value]="city.id" *ngFor="let city of cities">
+          {{ city.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Cost Details -->
+    <div class="col-md-4">
+      <label class="form-label required">تكلفة الطلب</label>
+      <div class="input-group">
+        <input
+          type="number"
+          formControlName="orderCost"
+          class="form-control"
+          min="0.01"
+          step="0.01"
+        />
+        <span class="input-group-text">ج.م</span>
+      </div>
+      <div
+        *ngIf="
+          orderForm.get('orderCost')?.invalid &&
+          orderForm.get('orderCost')?.touched
+        "
+        class="validation-error"
+      >
+        يجب إدخال تكلفة صحيحة
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="col-12 products-container">
+      <h4 class="mb-3">المنتجات</h4>
+      <div formArrayName="products">
+        <div
+          *ngFor="let product of products.controls; let i = index"
+          [formGroupName]="i"
+          class="product-row"
+        >
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label required">اسم المنتج</label>
+              <input type="text" formControlName="name" class="form-control" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label required">الوزن (كجم)</label>
+              <input
+                type="number"
+                formControlName="weight"
+                class="form-control"
+                min="0.1"
+                step="0.1"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label required">الكمية</label>
+              <input
+                type="number"
+                formControlName="quantity"
+                class="form-control"
+                min="1"
+              />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="removeProduct(i)"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn btn-outline-primary mt-3"
+        (click)="addProduct()"
+      >
+        <i class="fas fa-plus"></i> إضافة منتج
+      </button>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="col-12 mt-4">
+      <div class="d-flex justify-content-end gap-2">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="orderForm.invalid || loading"
+        >
+          <i class="fas fa-save"></i> حفظ التغييرات
+        </button>
+        <button type="button" class="btn btn-secondary" routerLink="/orders">
+          <i class="fas fa-times"></i> إلغاء
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
