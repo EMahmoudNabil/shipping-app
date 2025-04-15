@@ -110,4 +110,8 @@
     paymentType: number;
     totalWeight: number;
     products: OrderProduct[];
+    name: string;
   }
+
+  
+

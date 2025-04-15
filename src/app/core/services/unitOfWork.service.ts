@@ -14,7 +14,7 @@ import { EmployeeService } from './Employee.Service';
 
 import { MerchantService } from './Merchant.service';
 import { OrderService } from './order.service';
-import { ShippingTypeService } from './ShippingTypeService ';
+import { ShippingTypeService } from './ShippingType.Service';
 
 
 @Injectable({

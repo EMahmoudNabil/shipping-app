@@ -1,98 +1,119 @@
 import { Component, OnInit } from '@angular/core';
+import { OrderReportService } from '../../../core/services/order-report.service';
 import { ToastrService } from 'ngx-toastr';
 import { OrderReport } from '../../../models/OrderReport.Interface';
-import { OrderReportService } from '../../../core/services/OrderReport.Service';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-order-report',
   templateUrl: './order-report.component.html',
   styleUrls: ['./order-report.component.css'],
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [FormsModule,CommonModule],
+  standalone: true,
 })
 export class OrderReportComponent implements OnInit {
-  orderReports: OrderReport[] = [];
-  statuses: string[] = ['Pending', 'Completed', 'Cancelled']; // Example statuses
-  filters = { status: '', startDate: '', endDate: '' }; // Filter object
-  PageNumber: number = 1;
-  pageSize: number = 10;
-  pages: number[] = [];
-  totalItems: number = 0;
-  totalPages: number = 1;
+  orderReports: OrderReport[] = []; // Initialize as an empty array
+  orderStatuses = [
+    { value: 'WaitingForConfirmation', label: 'في انتظار التأكيد' },
+    { value: 'Pending', label: 'قيد الانتظار' },
+    { value: 'InProgress', label: 'قيد التنفيذ' },
+    { value: 'Delivered', label: 'تم التسليم' },
+    { value: 'Cancelled', label: 'تم الإلغاء' },
+    { value: 'Declined', label: 'مرفوض' },
+  ];
+  filters = {
+    orderStatus: '',
+    startDate: '',
+    endDate: '',
+  };
+  pageNumber = 1;
+  pageSize = 10;
+  totalPages = 1;
+  loading: boolean | undefined;
+  error: boolean | undefined;
 
   constructor(
+    private orderReportService: OrderReportService,
     private toastr: ToastrService,
-    private orderReportService: OrderReportService
   ) {}
-
+  sortReportsByDate(order: 'asc' | 'desc'): void {
+    this.orderReports.sort((a, b) => {
+      const dateA = new Date(a.reportDate).getTime();
+      const dateB = new Date(b.reportDate).getTime();
+  
+      if (order === 'asc') {
+        return dateA - dateB; // Ascending order
+      } else {
+        return dateB - dateA; // Descending order
+      }
+    });
+  }
   ngOnInit(): void {
     this.loadReports();
   }
-
   loadReports(): void {
-    const params = {
-      PageNumber: this.PageNumber,
-      PageSize: this.pageSize,
-      Status: this.filters.status,
-      StartDate: this.filters.startDate,
-      EndDate: this.filters.endDate,
-    };
-
-    this.orderReportService.getAllWithPagination(params).subscribe({
-      next: (response: any) => {
-        this.orderReports = response.data || response;
-        this.totalItems = response.totalCount || 0;
-        this.calculateTotalPages();
-        this.updatePageNumbers();
-      },
-      error: () => {
-        this.toastr.error('حدث خطأ أثناء تحميل التقارير');
-      },
-    });
+    this.loading = true;
+    this.error = false;
+    
+    this.orderReportService
+      .getOrderReports(this.pageNumber, this.pageSize, this.filters)
+      .subscribe({
+        next: (response) => {
+          this.orderReports = Array.isArray(response) ? response : [];
+          this.totalPages = this.calculateTotalPages(this.orderReports.length);
+          this.loading = false;
+          this.filterAndSortReports();
+        },
+        error: (error) => {
+          console.error('API Error:', error);
+          this.error = true;
+          this.loading = false;
+          this.toastr.error('فشل تحميل التقارير');
+        },
+      });
+  }
+  // Helper method to calculate total pages if not provided by API
+  calculateTotalPages(totalItems: number): number {
+    return Math.ceil(totalItems / this.pageSize) || 1;
   }
 
-  filterReports(): void {
-    this.PageNumber = 1; // Reset to the first page
+  searchReports(): void {
+    this.pageNumber = 1;
     this.loadReports();
-  }
-
-  calculateTotalPages(): void {
-    this.totalPages = Math.ceil(this.totalItems / this.pageSize);
-    if (this.totalPages === 0) this.totalPages = 1;
-  }
-
-  updatePageNumbers(): void {
-    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-  }
-
-  nextPage(): void {
-    if (this.PageNumber < this.totalPages) {
-      this.PageNumber++;
-      this.loadReports();
-    }
   }
 
   prevPage(): void {
-    if (this.PageNumber > 1) {
-      this.PageNumber--;
+    if (this.pageNumber > 1) {
+      this.pageNumber--;
       this.loadReports();
     }
   }
 
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.PageNumber = page;
+  nextPage(): void {
+    if (this.pageNumber < this.totalPages) {
+      this.pageNumber++;
       this.loadReports();
     }
   }
-
-  onPageSizeChange(newSize: number): void {
-    this.pageSize = newSize;
-    this.PageNumber = 1;
-    this.loadReports();
-  }
+  filterAndSortReports(): void {
+    const startDate = this.filters.startDate ? new Date(this.filters.startDate).setHours(0, 0, 0, 0) : null;
+    const endDate = this.filters.endDate ? new Date(this.filters.endDate).setHours(23, 59, 59, 999) : null;
+    this.orderReports = this.orderReports
+      .filter((report) => {
+        const reportDate = new Date(report.reportDate).getTime();
+        if (startDate && reportDate < startDate) {
+          return false; 
+        }
+        if (endDate && reportDate > endDate) {
+          return false; 
+        }
+        return true; 
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.reportDate).getTime();
+        const dateB = new Date(b.reportDate).getTime();
+        return dateA - dateB; 
+      });
+  } 
 }

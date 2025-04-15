@@ -1,12 +1,11 @@
 export interface OrderReport {
   id: number;
-  status: string; // Status of the Order
-  isDeleted: boolean; // Status of the OrderReport
+  orderStatus: string;
   merchantName: string;
   customerName: string;
   customerPhone1: string;
   regionName: string;
-  branchName: string;
+  cityName: string;
   orderCost: number;
   amountReceived: number;
   shippingCost: number;
@@ -14,3 +13,4 @@ export interface OrderReport {
   companyValue: number;
   reportDate: string;
 }
+

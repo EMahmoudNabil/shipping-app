@@ -1,24 +1,21 @@
-.arabic-style {
-  direction: rtl;
-  text-align: right;
-}
-
-.table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.03);
-}
-
-.bg-light-primary {
-  background-color: rgba(0, 123, 255, 0.1);
-}
-
-.pagination .page-item.active .page-link {
-  background-color: #007bff;
-  color: white;
-}
-
-.text-warning {
-  font-weight: bold;
-  background-color: yellow;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
+/* .btn-primary:hover {
+    background-color: #0056b3; 
+    color: #fff;
+    transition: background-color 0.3s ease;
+  } */
+  .btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #0056b3;
+  }
+  
+  .btn-lg {
+    padding: 0.5rem 1.5rem;
+    font-size: 1.25rem;
+  }

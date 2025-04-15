@@ -21,14 +21,16 @@ import { environment } from '../../environment';
      
       return this.http.get<Branch[]>(this.apiUrl);
     }
-    getAllWithPagination(pageNumber: number, pageSize: number, sortBy?: string): Observable<any> {
-      let params = new HttpParams()
+    getAllWithPagination(pageNumber: number, pageSize: number): Observable<Branch[]> {
+      const params = new HttpParams()
         .set('PageNumber', pageNumber.toString())
         .set('PageSize', pageSize.toString());
-      if (sortBy) {
-        params = params.set('SortBy', sortBy);
-      }
-      return this.http.get<any>(`${this.apiUrl}/GetAllByPramter`, { params });
+    
+      return this.http.get<Branch[]>(this.apiUrl, { params }).pipe(
+        tap((branches) => {
+          this.hasNextPage = branches.length === pageSize;
+        })
+      );
     }
     getById(id: number): Observable<Branch> {
       return this.http.get<Branch>(`${this.apiUrl}/${id}`);

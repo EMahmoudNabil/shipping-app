@@ -43,15 +43,13 @@ export const routes: Routes = [
 
       {path:'addMerchant',component:MerchantComponent},
       {path:'orders/add',component:AddOrderComponent},
-
-      {path:'addMerchant',component:MerchantComponent},
       { path: 'order-reports', component: OrderReportComponent },
       {path:'orders',component:OrderStatusComponent},
       {
         path: 'orders/edit/:id',
         component: EditOrderComponent
-      }
-
+      },
+      {path:'addMerchant',component:MerchantComponent},
 
 
     ], canActivate: [AuthGuard]
