@@ -16,6 +16,7 @@ import { MerchantComponent } from './shared/components/merchant/merchant.compone
 import { AddOrderComponent } from './shared/components/add-order/add-order.component';
 import { CourierComponent } from './shared/components/courier/courier.component';
 import { OrderReportComponent } from './shared/components/order-report/order-report.component';
+import { RoleComponent } from './shared/components/permission/permission.component';
 
 
 
@@ -38,7 +39,7 @@ export const routes: Routes = [
       {path:'Shippingtypes',component:ShippingTypeComponent},
       {path:'add-employee',component:AddEmployeeComponent },
 
-
+      { path: 'Groups', component: RoleComponent },
       {path:'addMerchant',component:MerchantComponent},
       {path:'orders/add',component:AddOrderComponent},
       { path: 'order-reports', component: OrderReportComponent },

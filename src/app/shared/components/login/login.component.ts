@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
-
+import {jwtDecode} from 'jwt-decode';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -32,11 +32,15 @@ export class LoginComponent implements OnInit {
 
     const token = localStorage.getItem('authToken');
     if (token) {
+      const decoded = jwtDecode(token);
       this.router.navigate(['/dashboard']);
-      console.log('Token found, redirecting to dashboard...');
+      var decodedToken = decoded as { exp: number; permissions: string[], roles: string[] };
+      var permissions = decodedToken.permissions;
+      var roles = decodedToken.roles;
+      localStorage.setItem('permissions', JSON.stringify(permissions));
+      localStorage.setItem('roles', JSON.stringify(roles));
     }
   }
-
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }

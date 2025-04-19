@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderReportService } from '../../../core/services/order-report.service';
 import { ToastrService } from 'ngx-toastr';
-import { OrderReport } from '../../../models/OrderReport.Interface';
+
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
+import { OrderReport } from '../../../models/OrderReport.interface';
 @Component({
   selector: 'app-order-report',
   templateUrl: './order-report.component.html',

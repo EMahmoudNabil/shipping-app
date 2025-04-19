@@ -5,7 +5,7 @@ export interface OrderReport {
   customerName: string;
   customerPhone1: string;
   regionName: string;
-  cityName: string;
+  branchName: string;
   orderCost: number;
   amountReceived: number;
   shippingCost: number;
