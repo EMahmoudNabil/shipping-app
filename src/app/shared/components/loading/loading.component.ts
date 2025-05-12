@@ -1,8 +1,9 @@
 // src/app/core/components/loading/loading.component.ts
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { LoadingService } from '../../../core/services/loading.service';
+
 import { Observable } from 'rxjs';
+import { LoadingService } from '../../../core/services/loading.service copy';
 
 @Component({
   selector: 'app-loading',

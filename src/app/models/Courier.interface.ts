@@ -1,5 +1,5 @@
 export interface Courier {
-  id?: number;
+  id?: string;
   email: string;
   password: string;
   fullName: string;
@@ -11,4 +11,8 @@ export interface Courier {
   specialCourierRegions: {
     regionId: number;
   }[];
+}
+export interface CourierDTO {
+  id: string;
+  courierName: string;  // Changed to match backend casing
 }

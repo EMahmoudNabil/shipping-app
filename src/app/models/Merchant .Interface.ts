@@ -14,3 +14,10 @@ export interface Merchant {
       citySettingId: number;
     }[];
   }
+  export interface MerchantResponse {
+    id: string;
+    name: string;
+    phone: string;
+    email: string;
+    address: string;
+  }

@@ -6,11 +6,37 @@ import { UnitOfWorkServices } from '../../../core/services/unitOfWork.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { Role } from '../../../models/Role.interface';
+import { PageHeaderComponent } from "../page-header/page-header.component";
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
+
+
 
 
 @Component({
   selector: 'app-add-employee',
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, PageHeaderComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatTableModule
+  ],
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.css'
 })

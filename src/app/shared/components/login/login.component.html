@@ -1,77 +1,62 @@
-<div class="mt-5 container p-5" dir="rtl">
-  <div class="text-center mb-5 w-50 m-auto">
-    <img src="/assets/images/PSimge.png" alt="Logo" class="img-fluid" />
-  </div>
+<div class="login-container" dir="rtl">
+  <mat-card class="login-card">
+    <!-- شعار التطبيق -->
+    <div class="logo-container">
+      <img src="/assets/images/PSimge.png" alt="Logo" class="logo-img">
+    </div>
 
-  <div class="w-50 m-auto">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group mb-3">
-        <label for="email" class="form-label lead fw-bold">
-          البريد الالكتروني 
-        </label>
-        <input
-          type="text"
-          id="email"
-          formControlName="email"
-          class="form-control shadow-sm"
-          placeholder="ادخل البريد الالكتروني"
-          [ngClass]="{
-            'is-invalid':
-              loginForm.get('email')?.invalid &&
-              loginForm.get('email')?.touched,
-            'is-valid':
-              loginForm.get('email')?.valid &&
-              loginForm.get('email')?.touched
-          }"
-        />
-        <div
-          *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-          class="invalid-feedback"
-        >
-          <div *ngIf="loginForm.get('email')?.errors?.['required']">
-            البريد الالكتروني 
-          </div>
-        </div>
-      </div>
+    <!-- نموذج تسجيل الدخول -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- حقل البريد الإلكتروني -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>البريد الإلكتروني</mat-label>
+        <input matInput 
+               type="email" 
+               formControlName="email" 
+               placeholder="ادخل البريد الإلكتروني">
+        <mat-icon matSuffix>email</mat-icon>
+        <mat-error *ngIf="loginForm.get('email')?.invalid">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">
+            البريد الإلكتروني مطلوب
+          </span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">
+            بريد إلكتروني غير صالح
+          </span>
+        </mat-error>
+      </mat-form-field>
 
-      <div class="form-group my-3 position-relative">
-        <label for="password" class="form-label lead fw-bold">كلمة المرور</label>
-        <input
-          [type]="showPassword ? 'text' : 'password'"
-          id="password"
-          formControlName="password"
-          class="form-control shadow-sm"
-          placeholder="كلمة المرور"
-          [ngClass]="{
-            'is-invalid':
-              loginForm.get('password')?.invalid &&
-              loginForm.get('password')?.touched,
-            'is-valid':
-              loginForm.get('password')?.valid &&
-              loginForm.get('password')?.touched
-          }"
-        />
-
-        <i
-          class="fa position-absolute top-50 end-0 me-3 translate-middle-y"
-          [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
-          (click)="togglePasswordVisibility()"
-          style="cursor: pointer"
-        ></i>
-
-        <div
-          *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-          class="invalid-feedback"
-        >
-          <div *ngIf="loginForm.get('password')?.errors?.['required']">
+      <!-- حقل كلمة المرور -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>كلمة المرور</mat-label>
+        <input matInput 
+               [type]="showPassword ? 'text' : 'password'" 
+               formControlName="password" 
+               placeholder="ادخل كلمة المرور">
+        <button mat-icon-button matSuffix 
+                (click)="togglePasswordVisibility()"
+                [attr.aria-label]="'Show password'"
+                [attr.aria-pressed]="showPassword">
+          <mat-icon>{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="loginForm.get('password')?.invalid">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">
             كلمة المرور مطلوبة
-          </div>
-        </div>
-      </div>
+          </span>
+        </mat-error>
+      </mat-form-field>
 
-      <button type="submit" class="btn btn-primary w-50 m-auto d-block mt-4" [disabled]="loading">
-        {{ loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول' }}
+      <!-- زر تسجيل الدخول -->
+      <button mat-raised-button 
+              color="primary" 
+              class="login-button" 
+              type="submit"
+              [disabled]="loading">
+        <span *ngIf="!loading">تسجيل الدخول</span>
+        <span *ngIf="loading">
+          <mat-icon class="spinner-icon">hourglass_top</mat-icon>
+          جاري تسجيل الدخول...
+        </span>
       </button>
     </form>
-  </div>
+  </mat-card>
 </div>

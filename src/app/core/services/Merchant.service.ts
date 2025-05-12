@@ -4,19 +4,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { GenericCURD } from '../../models/Generic.interface';
 import { environment } from '../../environment';
-import { Merchant } from '../../models/Merchant .Interface';
+import { Merchant, MerchantResponse } from '../../models/Merchant .Interface';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class MerchantService implements GenericCURD<Merchant> {
+export class MerchantService implements GenericCURD<any> {
   private apiUrl = `${environment.apiUrl}/api/Auth/addMerchant`;
   private specialCityCostUrl = `${environment.apiUrl}/api/SpecialCityCost`;
-
+  private GetMerchant = `${environment.apiUrl}/api/Merchant/GetMerchant`;
   constructor(private http: HttpClient) {}
   
-  getAll(): Observable<Merchant[]> {
-      return this.http.get<Merchant[]>(`${this.apiUrl}/Merchants`); //error
+  getAll(): Observable<MerchantResponse[]> {
+      return this.http.get<MerchantResponse[]>(`${this.GetMerchant}`); //error
   }
   
   getById(id: number | string): Observable<Merchant> {

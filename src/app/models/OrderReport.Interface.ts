@@ -2,6 +2,7 @@ export interface OrderReport {
   id: number;
   orderStatus: string;
   merchantName: string;
+  merchantId: string;
   customerName: string;
   customerPhone1: string;
   regionName: string;
@@ -11,5 +12,6 @@ export interface OrderReport {
   shippingCost: number;
   shippingCostPaid: number;
   companyValue: number;
-  reportDate: string; // ISO date format
+  reportDate: string;
 }
+
